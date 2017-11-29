@@ -21,15 +21,47 @@ body {
 .data {
     margin-top: 20vh;
     border-left: solid 1px #ccc;
+    border-right: solid 1px #ccc;
 }
 
-    .data:first-child {
-        margin-top: 20vh;
-    }
-
+.data:first-child {
+	margin-top: 20vh;
+}
+.links {
+	margin-top: auto;
+    margin-bottom: auto;
+}
+.my-link-button, .my-link-button:hover, .my-link-button:focus, .my-link-button:visited {
+	background-color: #aaa;
+	color: #fff;
+	margin: 5px;
+	width: 43%;
+}
 .myLink, .myLink:hover {
     text-decoration: none;
 }
 .list-group-item {
 	border: 0;
+}
+
+@media screen and (max-width: 425px){
+	.image {
+		border-right: 0;
+	}
+    .data {
+        border-right: 0;
+    }
+	.links {
+        margin-top: 10vh;
+		margin-bottom: 10vh;
+        margin-left: 15%;
+	}
+    .my-link-button, .my-link-button:hover, .my-link-button:focus, .my-link-button:visited {
+        width: 45%;
+    }
+}
+@media screen and (max-width: 768px){
+    .my-link-button, .my-link-button:hover, .my-link-button:focus, .my-link-button:visited {
+        width: 80%;
+    }
 }
