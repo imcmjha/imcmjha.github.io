@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-16">
+		<title>Performance Check up :: Chandra Mohan Jha</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAZoAAAAJDIwZGQzNDhkLWVkZmUtNDBlZC04NmQyLTU2ODk0OGVjYjU4MA.jpg" />
+		<link rel="apple-touch-icon" href="https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAZoAAAAJDIwZGQzNDhkLWVkZmUtNDBlZC04NmQyLTU2ODk0OGVjYjU4MA.jpg"/>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" async >
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" async />
+    <link href="https://imcmjha.github.io/Assets/css/myStyle.css" type="text/css" rel="stylesheet" async />
+	</head>
+	<body>
+		<main role="main" class="container-fluid mt-5">
+        <article class="row">
+            <aside class="col-sm-2">
+							<ul class="list-group">
+								<li class="list-group-item"><a href="https://imcmjha.github.io/">Home</a></li>
+								<li class="list-group-item">
+									<a href="https://imcmjha.github.io/check-up/">Check Up</a>
+									<ul class="list-group">
+										<li class="list-group-item">
+											<a href="https://imcmjha.github.io/check-up/html5-semantic-layout/">
+												HTML5 Semantic Layout
+											</a>
+										</li>
+										<li class="list-group-item">
+											<a href="https://imcmjha.github.io/check-up/performance">
+												Performance
+											</a>
+										</li>
+									</ul>
+								</li>
+								<li class="list-group-item"><a href="https://imcmjha.github.io/About/">About</a></li>
+								<li class="list-group-item"><a href="https://imcmjha.github.io/Resume/">Resume</a></li>
+							</ul>
+            	
+            </aside>
+						<section class="col-sm-10">
+							<div>
+								<h1>
+									Performance
+								</h1>
+								<blockquote class="blockquote">
+									By keeping your client side code small and lightweight, you can literally open your product up to new markets.
+								</blockquote>
+							</div>
+							<div>
+								<h3>
+									Testing and Grading Performance
+								</h3>
+								<p>All performance testing needs to take place on actual devices, not just emulations, and on actual networks. NOt all standards are perfect in testing. The maximum value should be considered while testing. As nearly 80% of the response time is spent on the front-end, most of the performance suggestions are front-end based.<br> The following are good testing and grading resources, and the minimum target scores for each resource:</p>
+								<ul>
+										<li>
+											<a href="https://developers.google.com/speed/pagespeed/insights" target="_blank"> Page Speed</a> - 85
+										</li>	
+										<li>
+											<a href="http://www.webpagetest.org/" target="_blank">Web Page Test</a>
+											<ul>
+												<li>First Byte Time: 85</li>
+												<li>Use persistent connection: 85</li>
+												<li>Use gzip compression for transferring compressible responses: 90</li>
+												<li>Compress Images: 90</li>
+												<li>Use Progressive JPEGs: 90</li>
+												<li>Leverage browser caching of static assets: 90</li>
+												<li>Use a CDN for all static assets: 85</li>
+											</ul>
+										</li>
+										<li>
+											<a href="http://developer.yahoo.com/yslow/" target="_blank"> YSlow</a> - 85
+										</li>
+									</ul>    
+							</div>
+							
+							<!-- PayLoad PErformance -->
+							<div>
+								<h3>
+									Payload Performance
+								</h3>
+								<p>Load times, load sizes, and number of requests are extraordinarily important and often overlooked or left to the end of a development cycle to start to optimize. It is always best to keep actual performance as much under these numbers as possible.</p>
+								<ul>
+									<li>Time To First Byte: 200ms - 350ms</li>
+									<li>DOM Content Loaded: 1000ms - 2000ms</li>
+									<li>JS Load Event Fired: 900ms - 2200ms</li>
+									<li>Total Download Size: 1MB - 2MB</li>
+									<li>DNS Lookup: 10ms - 20ms</li>
+									<li>HTTP Requests: 50 - 75</li>
+								</ul>
+							</div>
+							<!-- Page Performance -->
+							<div>
+								<h3>
+									Page Performance
+								</h3>
+								<p>Once a site has been downloaded, performance of the user interactions is important as well. The goal to reach for is a site running at or above 60 frames per second. Anything below this makes sites appear poorly built, sluggish, and unresponsive. When dealing with user input, interactions should be under 100ms to feel instant and under 250ms to feel fast. Anything longer and interactions begin to feel sluggish. Some good rules of thumb to avoid the user interface from feeling this way are:</p>
+									<ul>
+										<li>Do not bind expensive processes to document/window events (scroll, resize, etc…)</li>
+										<li>Use CSS3 translate instead of absolute position with top and left properties</li>
+										<li>Do not emulate fixed positioning using JavaScript</li>
+										<li>Animate through CSS3 instead of JavaScript</li>
+										<li>Group JavaScript document reads and writes separately. Use requestAnimationFrame to reduce layout thrashing when reading and writing to the DOM</li>
+										<li>Avoid Internet Explorer's CSS expression selectors</li>
+									</ul>
+							</div>
+							<!-- Front End Optimization -->
+							<div>
+								<h3>
+									Front End Optimizations
+								</h3>
+								<p>There are a number of optimization techniques that can be employed in order to enhance overall performance on a site. Some of these are battle-hardened optimizations that should be employed on all sites, while others are more experimental. As such, they will be divided into categories based on which are most critical for success, and which can be played with.
+								</p>
+							</div>
+							<!-- Critical Optimizations -->
+							<div>
+								<h3>
+									Critical Optimizations
+								</h3>
+								<ul>
+									<li>
+										Avoid page redirects
+									</li>
+									<li>
+										Provide proper headers for all files
+										<ul>
+											<li>
+												Static files (fonts, js, css) should have sufficiently long cache, at least 30 days
+											</li>
+											<li>
+												Images should have a slightly shorter cache, at least 15 days
+											</li>
+											<li>
+												HTML should have a short cache, around 15 minutes
+											</li>
+											<li>
+												Internet Explorer Edge header should always be passed
+											</li>
+										</ul>
+									</li>
+									<li>
+										All JavaScript should be moved to the footer
+									</li>
+									<li>
+										document.write should be <strong>avoided</strong>
+									</li>
+									<li>
+										Images with no transparency should be served as progressive JPEGs, not as PNG files
+									</li>
+									<li>
+										CSS and JavaScript should be minified and aggregated
+									</li>
+									<li>
+										Reduce all blocking in the critical path to only page HTML and CSS
+									</li>
+									<li>
+										Do not group CSS by media in &lt;link&gt; tags; all of the CSS gets downloaded anyway. Instead, reduce the number of aggregates and wrap internal CSS in media queries.
+									</li>
+									<li>
+										Use a CDN
+									</li>
+									<li>
+										Cache page requests
+									</li>
+									<li>
+										Utilize progressive enhancement with feature detection to serve only what is needed to a user
+									</li>
+									<li>
+										Ensure that files that are only useful on particular pages only load on those pages, not all pages
+									</li>
+									<li>
+										Always load CSS before JavaScript
+									</li>
+								</ul>
+							</div>
+							<!-- Recommended Optimizations -->
+							<div>
+								<h3>
+									Recommended Optimizations
+								</h3>
+								<ul>
+									<li>
+										Employ a Responsive Image solution. Until a standard exists, look for one based on image width over viewport size.
+									</li>
+									<li>
+										ASYNC and DEFER all on-page scripts (for instance, DART tags).
+									</li>
+									<li>
+										ASYNC all ads
+									</li>
+									<li>
+										Inline small but important files (generally &lt;3Kb) to reduce HTTP requests. Aggregate other small files to reduce HTTP requests
+									</li>
+								</ul>
+							</div>
+							<!-- Experimental Optimizations -->
+							<div>
+								<h3>
+									Experimental Optimizations
+								</h3>
+								<ul>
+									<li>
+										Inline above-the-fold CSS into the HTML. Push additional CSS to the footer
+									</li>
+									<li>
+										Utilize <a href="https://developers.google.com/speed/webp/" target="_blank"> .webp</a> and <a href="http://www.webmproject.org/" target="_blank"> .webm</a> file formats
+									</li>
+									<li>
+										Dynamically serve appropriately sized images from server side instead of relying upon a client side technique
+										</li>
+								</ul>
+							</div>
+						</section>
+        </article>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous" content-type="text/javascript" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous" content-type="text/javascript" async></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous" content-type="text/javascript" async></script>
+	</body>
+</html>

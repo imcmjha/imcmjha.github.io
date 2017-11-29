@@ -30,3 +30,6 @@ body {
 .myLink, .myLink:hover {
     text-decoration: none;
 }
+.list-group-item {
+	border: 0;
+}
