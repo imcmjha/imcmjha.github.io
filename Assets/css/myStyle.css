@@ -17,7 +17,10 @@ body {
     background: -moz-linear-gradient(right, #ddd, #fff);
     background: linear-gradient(to right, #ddd, #fff);
 }
-
+.coming-soon {
+    margin-left: 30vw;
+    margin-top: 20vw;
+}
 .data {
     margin-top: 20vh;
     border-left: solid 1px #ccc;
@@ -58,6 +61,10 @@ body {
 	}
     .my-link-button, .my-link-button:hover, .my-link-button:focus, .my-link-button:visited {
         width: 45%;
+    }
+    .coming-soon {
+        margin-left: 0;
+        margin-top: 20vw;
     }
 }
 @media screen and (max-width: 768px){
