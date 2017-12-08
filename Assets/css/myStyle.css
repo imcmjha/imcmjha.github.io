@@ -43,6 +43,21 @@ body {
 .myLink, .myLink:hover {
     text-decoration: none;
 }
+.resume-image {
+    width: 90vw;
+}
+.bold {
+    font-weight: bold;
+}
+.blue {
+    color: #3939f8;
+}
+.header {
+    font-weight: 600;
+}
+.underline {
+    border-bottom: 1px solid blue;
+}
 .list-group-item {
 	border: 0;
 }
