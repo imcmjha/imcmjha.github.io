@@ -16,5 +16,5 @@ function ajaxContent(val) {
 }
 
 $(document).ready(function(){
-    loadAjaxContent("http://127.0.0.1:5500/my-website/imcmjha.github.io/Assets/snippets/aside-navigation.html", "#asideNavigation");
+    loadAjaxContent("https://imcmjha.github.io/Assets/snippets/aside-navigation.html", "#asideNavigation");
 });
