@@ -1,0 +1,10 @@
+a.chip {
+    color: #039be5;
+  }
+  .emoji {
+    width: 25px;
+  }
+  
+  #mobile table th:last {
+    text-align: center;
+  }
