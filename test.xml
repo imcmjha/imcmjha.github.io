@@ -1,0 +1,1032 @@
+<rss version="2.0"><channel><title>Anxhelo Lushka</title><description>My personal website and blog</description><link>https://lushka.al/</link><atom:link href="https://lushka.al/feed.xml" rel="self" type="application/rss+xml"/><pubDate>Wed, 20 Mar 2019 23:53:50 +0100</pubDate><item><title>FOSDEM 2019</title><description><p><a href="https://fosdem.org">FOSDEM</a> is one of the largest gatherings of Free Software contributors in the world and happens each year in Brussels (Belgium) at the <a href="https://www.openstreetmap.org/way/30358555#map=16/50.8199/4.3987">ULB Campus Solbosch</a>. In 2019, it was be held on Saturday, February 2nd, and Sunday, February 3rd.</p>
+
+<p>This was my 3rd year going to FOSDEM, with the two previous years participating and helping at the <a href="https://libreoffice.org">LibreOffice</a> and <a href="https://opensourcedesign.net/">Open Source Design</a> booths. This year though, I was part of the <a href="https://getfedora.org">Fedora Project</a> and OSD booth.</p>
+
+<p>I applied to help at the booth as a Fedora Ambassador and landed in Brussels a few days before the event.
+This gave me some time to wander around the city and visit Brugge, which was a beautiful city.</p>
+
+<p><img src="../assets/img/posts/brugge.jpg" alt="Brugge" /></p>
+
+<p>On Friday morning, Brian asked me to help him with the Fedora booth over at the <a href="https://wiki.centos.org/Events/Dojo/Brussels2019">CentOS Dojo event</a> at the <a href="https://www.openstreetmap.org/way/244955992#map=19/50.84890/4.34909">Marriott Grand Place Hotel</a>. I arrived there at 9 AM and stayed during the whole day. There were some interesting talks over at the CentOS room and the <a href="https://www.postgresql.org/">PostgreSQL</a> one.</p>
+
+<p><img src="../assets/img/posts/booth-dojo.jpg" alt="Fedora booth at CentOS Dojo" /></p>
+
+<p>As always, on Friday evening there’s the FOSDEM pre-party held at <a href="https://www.openstreetmap.org/node/3118693327">Delirium Taphouse Bar</a>, but this time I didn’t go as there’s way too many people around.</p>
+
+<p>As always, FOSDEM started early morning on Saturday. It was snowing heavily but this didn’t stop people from arriving.</p>
+
+<p><img src="../assets/img/posts/fosdem-snow.jpg" alt="Snow on Saturday" /></p>
+
+<p>We set-up the booth, with the Fedora roll-up banner, tablecloth, a <a href="https://fedoraproject.org/wiki/Fedorator">Fedorator</a>, an old <a href="https://spins.fedoraproject.org/en/soas/">Sugar on a Stick</a> laptop and plenty of stickers and swag.</p>
+
+<p>Time goes by really fast when at the booths and the first day was already towards the end. Unfortunately, I still didn’t manage to follow any talk (same as past years).</p>
+
+<p>The second day was a bit warmer and the sky was clear. We had 2-hour shifts for the booth but I couldn’t stay much there because I was also helping at the OSD booth and had helped on Friday too.</p>
+
+<p>About the OSD booth, this year we had plenty more visitors come over at our booth and ask questions, also the devroom was full of people. Unlike past year, I missed the group photo because I was again running around the campus. No talk this second day either.</p>
+
+<p>All in all, FOSDEM was a nice event, I met old friends and new ones alike, but I can’t talk much about the quality of the presentations, as I didn’t manage to follow any.</p>
+
+<p>See you there next year! 😊</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Tue, 12 Feb 2019 13:00:00 +0100</pubDate><link>https://lushka.al/fosdem-2019/</link><guid isPermaLink="true">https://lushka.al/fosdem-2019/</guid><category>belgium</category><category>conference</category><category>fosdem</category><category>report</category><category>blog</category><category>conference</category><category>report</category></item><item><title>DNS and Root Certificates</title><description><p>Due to recent events we (as in we from the Privacy Today group) felt compelled to write an impromptu article on this matter. It’s intended for all audiences so it will be kept simple - technical details may be posted later.</p>
+
+<h2 id="what-is-dns-and-why-does-it-concern-you">What Is DNS And Why Does It Concern You?</h2>
+
+<p>DNS stands for Domain Name System and you encounter it daily. Whenever your web browser or any other application connects to the internet, it will most likely do so using a domain. A domain is simply the address you type: i.e. <a href="https://duckduckgo.com">duckduckgo.com</a>. Your computer needs to know where this leads to and will ask a DNS resolver for help. It will return an IP like <a href="http://176.34.155.23">176.34.155.23</a>; the public network address you need to know to connect. This process is called a DNS lookup.</p>
+
+<p>There are certain implications for both your privacy and your security as well as your liberty:</p>
+
+<h3 id="privacy">Privacy</h3>
+
+<p>Since you ask the resolver for an IP for a domain name, it knows exactly which sites you’re visiting and, thanks to the “Internet Of Things”, often abbreviated as IoT, even which appliances you use at home.</p>
+
+<h3 id="security">Security</h3>
+
+<p>You’re trusting the resolver that the IP it returns is correct. There are certain checks to ensure it is so, under normal circumstances, that is not a common source of issues. These can be undermined though and that’s why this article is important. If the IP is not correct, you can be fooled into connecting to malicious 3rd parties - even without ever noticing any difference. In this case, your privacy is in much greater danger because, not only are the sites you visit tracked, but the contents as well. 3rd parties can see exactly what you’re looking at, collect personal information you enter (such as passwords), and a lot more. Your whole identity can be taken over with ease.</p>
+
+<h3 id="liberty">Liberty</h3>
+
+<p>Censorship is commonly enforced via DNS. It’s not the most effective way to do so but it is extremely widespread. Even in western countries, it’s routinely used by corporations and governments. They use the same methods as potential attackers; they will not return the correct IP when you ask. They could act as if the domain doesn’t exist or direct you elsewhere entirely.</p>
+
+<h2 id="ways-dns-lookups-can-happen">Ways DNS lookups can happen</h2>
+
+<h3 id="3rd-party-dns-resolvers-hosted-by-your-isp">3rd Party DNS Resolvers Hosted By Your ISP</h3>
+
+<p>Most people are using 3rd party resolvers hosted by their Internet Service Provider. When you connect your modem, they will automatically be fetched and you might never bother with it at all.</p>
+
+<h3 id="3rd-party-dns-resolver-of-your-choice">3rd Party DNS Resolver Of Your Choice</h3>
+
+<p>If you already knew what DNS means then you might have decided to use another DNS resolver of your choice. This might improve the situation since it makes it harder for your ISP to track you and you can avoid some forms of censorship. Both are still possible though, but the methods required are not as widely used.</p>
+
+<h3 id="your-own-local-dns-resolver">Your Own (local) DNS Resolver</h3>
+
+<p>You can run your own and avoid some of the possible perils of using others’. If you’re interested in more information drop us a line.</p>
+
+<h2 id="root-certificates">Root Certificates</h2>
+
+<h3 id="what-is-a-root-certificate">What Is A Root Certificate?</h3>
+
+<p>Whenever you visit a website starting with https, you communicate with it using a certificate it sends. It enables your browser to encrypt the communication and ensures that nobody listening in can snoop. That’s why everybody has been told to look out for the https (rather than http) when logging into websites. The certificate itself only verifies that it has been generated for a certain domain. There’s more though:</p>
+
+<p>That’s where the root certificate comes in. Think of it as the next higher level that makes sure the levels below are correct. It verifies that the certificate sent to you has been authorized by a certificate authority. This authority ensures that the person creating the certificate is actually the real operator.</p>
+
+<p>This is also referred to as the chain of trust.  Your operating system includes a set of these root certificates by default so that the chain of trust can be guaranteed.</p>
+
+<h3 id="abuse">Abuse</h3>
+
+<p>We now know that:</p>
+
+<ul>
+  <li>DNS resolvers send you an IP address when you send a domain name</li>
+  <li>Certificates allow encrypting your communication and verify they have been generated for the domain you visit</li>
+  <li>Root certificates verify that the certificate is legitimate and has been created by the real site operator</li>
+</ul>
+
+<p><strong>How can it be abused?</strong></p>
+
+<ul>
+  <li>A malicious DNS resolver can send you a wrong IP for the purpose of censorship as said before. They can also send you to a completely different site.</li>
+  <li>This site can send you a fake certificate.</li>
+  <li>A malicious root certificate can “verify” this fake certificate.</li>
+</ul>
+
+<p>This site will look absolutely fine to you; it has https in the URL and, if you click it, it will say verified. All just like you learned, right? <strong>No!</strong></p>
+
+<p>It now receives all the communication you intended to send to the original. This bypasses the checks created to avoid it. You won’t receive error messages, your browser won’t complain.</p>
+
+<p><strong>All your data is compromised!</strong></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<h3 id="risks">Risks</h3>
+
+<ul>
+  <li>Using a malicious DNS resolver can always compromise your privacy but your security will be unharmed as long as you look out for the https.</li>
+  <li>Using a malicious DNS resolver and a malicious root certificate, your privacy and security are fully compromised.</li>
+</ul>
+
+<h3 id="actions-to-take">Actions To Take</h3>
+
+<p><strong>Do not ever install a 3rd party root certificate!</strong> There are very few exceptions why you would want to do so and none of them are applicable to general end users.</p>
+
+<p><strong>Do not fall for clever marketing that ensures “ad blocking”, “military grade security”, or something similar</strong>. There are methods of using DNS resolvers on their own to enhance your privacy but installing a 3rd party root certificate never makes sense. You are opening yourself up to extreme abuse.</p>
+
+<h2 id="seeing-it-live">Seeing It Live</h2>
+
+<p><strong>WARNING</strong></p>
+
+<p>A friendly sysadmin provided a live demo so you can see for yourself in realtime. This is real.</p>
+
+<p><strong>DO NOT ENTER PRIVATE DATA! REMOVE THE CERT AND DNS AFTERWARDS!</strong></p>
+
+<p>If you do not know how to, don’t install it in the first place. While we trust our friend you still wouldn’t want to have the root certificate of a random and unknown 3rd party installed.</p>
+
+<h3 id="live-demo">Live Demo</h3>
+
+<p>Here is the link: <a href="http://https-interception.info.tm/">http://https-interception.info.tm/</a></p>
+
+<ul>
+  <li>Set the provided DNS resolver</li>
+  <li>Install the provided root certificate</li>
+  <li>Visit <a href="https://paypal.com">https://paypal.com</a> and enter random login data</li>
+  <li>Your data will show up on the website</li>
+</ul>
+
+<h2 id="further-information">Further Information</h2>
+
+<p>If you are interested in more technical details, let us know. If there is enough interest, we might write an article but, for now, the important part is sharing the basics so you can make an informed decision and not fall for marketing and straight up fraud. Feel free to suggest other topics that are important to you.</p>
+
+<p>This post is mirrored from <a href="https://t.me/privacytoday">Privacy Today channel</a>. Privacy Today is a group about all things privacy, open source, libre philosophy and more!</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Tue, 05 Feb 2019 11:00:00 +0100</pubDate><link>https://lushka.al/dns-and-certificates/</link><guid isPermaLink="true">https://lushka.al/dns-and-certificates/</guid><category>privacy</category><category>security</category><category>open source</category><category>network</category><category>dns</category><category>certificates</category><category>beginner</category><category>article</category><category>blog</category></item><item><title>Underexposed 2019</title><description><p>During early January (7-11) I had the opportunity and the pleasure to be part as a mentor in the <a href="https://simplysecure.org/underexposed/">Underexposed</a> event organized by <a href="https://simplysecure.org/">Simply Secure</a> in Berlin, Germany.</p>
+
+<p><a href="https://simplysecure.org/underexposed/">Underexposed Collective</a> is a loosely-knit group of designers, researchers, writers, advocates, and users who reject the current trajectory of mainstream technology development. They support people by providing funding, education, mentorship, design support, research, testing, and a community for collaboration.</p>
+
+<p>This was the first event they decided to organize as a Residency. Fellows from around the world spent one week with the Simply Secure team focused on a project that they propose. Together, the cohort used the residency to workshop their specific design challenge. Over the week they had for user research, independent work, lectures, critical discussions, design critiques and office hours with leaders in the field. Fellows also had  an opportunity to share their work with the public.</p>
+
+<p>I was invited as a <a href="https://en.wikipedia.org/wiki/Mentorship">mentor</a> alongside my colleague <a href="https://elioqoshi.me">Elio Qoshi</a> from <a href="https://ura.design">Ura Design</a>. We spent the week with other mentors and fellows by helping them with their ideas/projects and giving presentations on some topics.</p>
+
+<h3 id="monday-7-january">Monday (7 January)</h3>
+
+<p>The first day started with an introduction by the hosts from Simply Secure over at the <a href="https://www.openstreetmap.org/node/4842883021">WikiBär</a>. <a href="https://twitter.com/georgiamoon">Georgia Bullen</a>, the new Simply Secure Executive Director, opened the event and talked about the purpose of it, the agenda and everything else. After, we began to introduce each other shortly and the reason why we were there. The fellows shared their projects and/or ideas with us so we could have a better graps before we started to work on them.</p>
+
+<p><img src="../assets/img/posts/wikibär.jpg" alt="WikiBär" /></p>
+
+<p>We decided to end the first day with drinks and food over at <a href="https://www.openstreetmap.org/node/4525263054">Brewdog</a>, not forgetting some oldschool arcade games (and some anti-surveillance stickers at the toilets).</p>
+
+<p><img src="../assets/img/posts/brewdog.jpg" alt="Brewdog" /></p>
+
+<h3 id="tuesday-8-january">Tuesday (8 January)</h3>
+
+<p>My presentation was scheduled on Tuesday afternoon, but the plan changed and so I had to do it in the morning. Fortunately, our place was about 10-15 minutes on foot from the venue so I arrived on time. My session was about <a href="https://en.wikipedia.org/wiki/Prototype">Prototyping</a>. We began with pen and paper prototyping, as that is still the fastest and best way to build a prototype for pretty much anything related to UI and UX.</p>
+
+<p>The fellows had really interesting projects and for most of them, the main issue was related to the encryption key restore process. As these projects are security-and-privacy related, they are decentralized and offer users the option to create an encryption key in order to access their data if something bad happens in the future.</p>
+
+<p>Unfortunately, this process is often bypassed by users as it’s (according to them) an extra step that slows down their workflow. As a result, they often lose access to their accounts and data, which could be avoided if they would have had created that key in the beginning.</p>
+
+<p>We (Elio and I) helped almost all the projects here by creating prototypes on paper, discussing UX problems and possible solutions for them, then digitally creating mockups using <a href="https://www.figma.com">Figma</a>, a proprietary design collaboration tool.</p>
+
+<p>The second day we went out for dinner at a Taiwanese sushi place, it was my 2nd time ever trying sushi (I still haven’t learned how to properly use the chopsticks 😞).</p>
+
+<p><img src="../assets/img/posts/underexposed-sushi.jpg" alt="Sushi" /></p>
+
+<h3 id="wednesday-9-january">Wednesday (9 January)</h3>
+
+<p>Wednesday was one of the busiest days of the event. We got up early, ate breakfast and joined the others at the venue. We separated into two groups, one upstairs and one downstairs and worked on our personal projects or with others.</p>
+
+<p><a href="https://shiba.computer/">Cade</a>, a designer from Germany, gave a very interesting talk on <a href="https://shiba.computer/essay/on-weaponised-design/">Weaponized Design</a>, a process that allows for harm of users within the defined bounds of a designed system. You can read his essay in the link above.</p>
+
+<p>After the event, Simply Secure sponsored the dinner over at an old German restaurant near the venue (don’t have photos unfortunately).</p>
+
+<h3 id="thursday-10-january">Thursday (10 January)</h3>
+
+<p>We decided to take some time off on Thursday and hang around the city center (Berlin doesn’t actually have a defined center) and did some shopping. The weather was, as always, gray and sometimes rainy.</p>
+
+<p><img src="../assets/img/posts/berlin-center.jpg" alt="Berlin Center" /></p>
+
+<p>After some shopping, we returned to WikiBär and worked some more with the others until the end of the day.</p>
+
+<h3 id="friday-11-january">Friday (11 January)</h3>
+
+<p>Elio’s presentation was on Friday, about <a href="https://en.wikipedia.org/wiki/Style_guide">Style Guides</a> and the process of working in the open. He explained our latest projects, how we worked with <a href="https://ura.design/projects/securedrop">SecureDrop</a>, <a href="https://ura.design/projects/i2p">I2P</a>, <a href="https://ura.design/projects/reproducible-builds">Reproducible Builds</a>, <a href="https://ura.design/projects/thunderbird">Thunderbird</a> etc. and presented a short demo of the <a href="https://identihub.co">Identihub</a> software, open source software for hosting your brand and visual assets.</p>
+
+<p>This was the final day of the event and the fellows worked during the day to prepare their presentations, on what they learned during the week and what they worked on. The presentations were held at the <a href="https://www.openstreetmap.org/node/4996803917#map=19/52.49947/13.44914">Mozilla Offices</a> in Berlin. Many people had registered for the event and the fellows presented one by one their projects and conclusions. I was happy that our mockups were present in their slides and hope that the process continues to turn them into reality soon.</p>
+
+<p><img src="../assets/img/posts/mozilla-berlin.jpg" alt="Mozilla Offices Berlin" /></p>
+
+<p>After the presentations, we got to discuss with each other and then head over for drinks somewhere close the venue.</p>
+
+<h3 id="departure-12-january">Departure (12 January)</h3>
+
+<p>The last day, we headed down to the luggage room at the hostel, and I was suprised to see pictures of <a href="https://en.wikipedia.org/wiki/David_Hasselhoff">David Hasselhoff</a> everywhere. It was like a little museum so I had to take some pictures of it 😂.</p>
+
+<p><img src="../assets/img/posts/hoff-berlin.jpg" alt="The Hoff" /></p>
+
+<p>I would like to thank the entire Simply Secure team; Georgia, Ame, Eileen and Molly for being there and organizing a fantastic event. I had a really awesome time and hope to see you all again soon.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Mon, 21 Jan 2019 14:00:00 +0100</pubDate><link>https://lushka.al/underexposed-2019/</link><guid isPermaLink="true">https://lushka.al/underexposed-2019/</guid><category>design</category><category>fellows</category><category>community</category><category>underexposed</category><category>meeting</category><category>article</category><category>report</category><category>blog</category></item><item><title>Cheetah Mobile and privacy</title><description><p>If you own an Android device, you must have probably heard of/installed/used <a href="https://www.cmcm.com/en-us/">Cheetah Mobile</a> applications before. If not, you’re lucky you didn’t get the chance to hand out your data for free :)</p>
+
+<p>For those that have used their products and still do, I hope you delete them ASAP after reading this article; you might see this as a <a href="https://www.slanguide.com/what-does-psa-mean/">PSA</a> (Public Service Announcement), I’m doing you people a favour.</p>
+
+<p>And the main question would resolve to:</p>
+
+<h2 id="why-do-people-trust-cheetah-mobile-in-2018">Why do people trust Cheetah Mobile in 2018?</h2>
+
+<p>In 2018 it’s pretty safe to assume that almost everyone has Cheetah Mobile apps before, like Clean Master or CM Launcher 3D. Even if you have never heard of them, dozens of other apps and games like TikTok (the new Musical.ly) are at least indirectly connected to, funded or owned by Cheetah Mobile. They’re the 4th largest publisher on Google Play Store and the Apple App Store, right after Google, Facebook and Apple. If you are still using any of their apps, it’s time to stop doing so right now. For reasons why, read below.</p>
+
+<h3 id="a-huge-network-of-trash">A huge network of trash</h3>
+
+<p>First of all, Cheetah Mobile isn’t an Android app company itself, they are an “AI” company and they dream about robots and changing the future.</p>
+
+<p>“But why are they making utility apps in the first place?”, you might be asking. The answer to that is quite simple. They want data and they happen to have found a weak spot, which is the average Android user. For some reason that I don’t understand, a lot of Android users download boosters, launchers, and battery savers without blinking an eye, assuming that it is normal for these kind of apps to request every permission Android offers. I could spend some hours explaining why these so called cleaner/booster apps are bad and you shouldn’t use them, but that’s a topic for another article, which you can find everywere in the web.</p>
+
+<h3 id="cheetah-mobile-sells-your-data">Cheetah Mobile sells your data</h3>
+
+<p>“You still haven’t shown any proof that they are selling our data!” Well, their official <a href="http://data.cmcm.com">website</a> should probably be enough proof, right?</p>
+
+<p>Cheetah Data has been there for a while, and this is quite a big deal for your privacy. You have to go ahead and register for a limited, free account to check out what kind of data they actually collect. I’m glad someone else did that for us already, and damn, do they collect a lot! If you are a developer yourself you probably know about Google Analytics (and you already know my stance on Google products and their tracking) and the kind of statistics it provides you with. Imagine this, but for all applications they have, including your competition. These are <strong>updated every two days</strong>.</p>
+
+<h3 id="paying-users-get-full-analytics-and-profiles-of-the-users-of-any-app">Paying users get full analytics and profiles of the users of any app</h3>
+
+<p>The Cheetah Mobile apps not only collect statistics while you’re using them, <strong>they also analyze which apps you are using, at what time, and for how long</strong>. The fact that all of this data is being sold to the highest bidders makes me suspect that this is just the beginning.</p>
+
+<h3 id="samsung-and-microsoft-are-using-cheetah-mobile-libraries">Samsung and Microsoft are using Cheetah Mobile libraries</h3>
+
+<p>You might be wondering what this has to do with this article and you are right. Samsung’s Android software has a storage cleaning tool, which you might consider a nice to have feature at first… until you look at it a little closer.</p>
+
+<p><img src="../assets/img/posts/samsung-cheetah.jpg" alt="Samsung Cleaner" />
+Source: <a href="https://www.reddit.com/r/Android/comments/68rtn1/clean_master_is_what_samsung_uses_for_their/">Reddit</a></p>
+
+<p>Clean Master is developed by Cheetah Mobile. The <a href="https://play.google.com/store/apps/details?id=com.cleanmaster.mguard">app</a> on the Play Store has over 1,000,000,000 downloads and this number keeps rising every day. For every person that downloads them, Cheetah Mobile gets more and more data from users.</p>
+
+<p>If you ever wanted to install Clean Master on your Samsung Galaxy but didn’t know how to do so, don’t worry, Samsung has a <a href="https://www.samsung.com/uk/support/mobile-devices/how-do-i-get-the-clean-master-speed-booster-app-on-my-samsung-galaxy-device/">guide</a> on how to install said app.</p>
+
+<p>Now, what does Microsoft have to do with all this? To show you this we’ll need to take a closer look at the Play Store description of CM Launcher 3D to uncover this:</p>
+
+<p><img src="../assets/img/posts/microsoft-cheetah.png" alt="CM Launcher 3D" /></p>
+
+<p>Even if you have never used any of these “utility” apps before, you must’ve downloaded games such as Piano Tiles, created by Cheetah Games or another company funded by CM. Other apps and companies Cheetah Mobile owns you might not have realized yet include TikTok (formerly Musically) and Live.me, a live-streaming service.</p>
+
+<p>At this point it should be clear to you that they do everything in their power to collect data in every field out there, so it would only make sense to also have a browser on the app palette, wouldn’t it? Presenting you “CM Browser”, made to send your juicy browser history and usage data over to your new favorite multimillion-dollar company, ready to be shared with rich buyers.</p>
+
+<h3 id="tldr">TL;DR:</h3>
+
+<p>CM solely makes apps to mine data from their users, and they sell that data. There is basically nothing they are not collecting from your device. If you have one of their apps installed, anyone can go ahead and analyze how you are using your device and what you’re doing with it. You become part of a big data pool. If any of your friends are using Cheetah Mobile software, make sure to tell them about this.</p>
+
+<p>This article is in part inspired from <a href="https://medium.com/melon-pancakes/cheetah-mobile-a-web-of-trash-2f2ee875f6e5">this post</a> by <a href="https://medium.com/@deletescape">Till Kottmann</a>.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0 unless stated otherwise. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Mon, 26 Nov 2018 02:00:00 +0100</pubDate><link>https://lushka.al/cheetah-mobile-privacy/</link><guid isPermaLink="true">https://lushka.al/cheetah-mobile-privacy/</guid><category>privacy</category><category>software</category><category>proprietary</category><category>scam</category><category>android</category><category>article</category><category>psa</category><category>blog</category></item><item><title>Open Source Design Summit Tirana</title><description><p>During the first weekend of November (from 2-4 November) I had the opportunity and the pleasure to organize and be part of the 2nd edition of the <a href="https://opensourcedesign.net/summit">Open Source Design Summit</a>, this time happening in Tirana, Albania.</p>
+
+<p><a href="https://opensourcedesign.net/">Open Source Design</a> is a community of designers and developers pushing more open design processes and improving the user experience and interface design of open source software. The community writes articles, runs a <a href="https://opensourcedesign.net/jobs">job board</a>, puts on events, provides resources, and presents talks targeted at developers and designers interested in working and designing in Open Source.</p>
+
+<p><img src="../assets/img/posts/osd-logo.png" alt="Open Source Design logo" /></p>
+
+<p>Open Source Design Summit itself is an yearly event where designers, developers and more join to discuss about the issues of Open Design and how to improve our involvement in projects, provide better design and feedback, use better tools, ways of communicating and sharing with people etc.</p>
+
+<p>Together with the Open Source Design community a few months ago we at <a href="https://ura.design">Ura Design</a> <a href="https://github.com/opensourcedesign/organization/issues/103">initiated the discussion</a> on the <a href="https://github.com/opensourcedesign">Open Source Design organization repo on GitHub</a> for the location of the upcoming Summit and proposed Tirana. The discussion kept going for quite some months and the members of the community chimed in and gave their opinion. 
+We had discussions with the OSD members during the following months regarding the final details on monthly calls and <a href="https://discourse.opensourcedesign.net/">Discourse</a>.</p>
+
+<p>I was pretty excited to help with the organization of this edition as I feel myself much a part of this movement as I use <em>only</em>
+free and open source tools on my design workflow such as <a href="https://gimp.org">GIMP</a>, <a href="https://inkscape.org">Inkscape</a>, <a href="https://krita.org">Krita</a>, <a href="https://blender.org">Blender</a> and many more.</p>
+
+<p>Below you’ll find a more detailed storyline of the entire event and <strong>my opinions</strong> on what went good/bad and what to improve for the next edition.</p>
+
+<h2 id="the-full-story">The full story</h2>
+
+<h3 id="november-2nd-opening">November 2nd (opening)</h3>
+
+<p>This edition of the Summit started on the Friday of November 2nd in the afternoon with a reception gathering at <a href="http://oficina.al">Ofiçina</a>, the venue for the Summit. Some of the participants had arrived a day earlier (Thursday) or in the Friday morning, but unfortunately I (well, all of us really) was busy with the organization of the event so I couldn’t meet up for food/drinks with the guests, so that sucked a bit. Being in Albania, things are usually done last minute (blame our mentality and for almost never being on time) and so were most of the preparations.</p>
+
+<p>This was not a big problem anyway, because the OSD Summit is not the <a href="https://en.wikipedia.org/wiki/Conference">classic big conference</a> with parallel sessions and workshops but more of a collective or a small <a href="https://en.wikipedia.org/wiki/Unconference">unconference</a>.</p>
+
+<p>I met with many old friends and some new ones from countries as far away as <a href="https://en.wikipedia.org/wiki/New_Zealand">New Zealand</a>, <a href="https://en.wikipedia.org/wiki/Czech_Republic">Czech Republic</a>, <a href="https://en.wikipedia.org/wiki/Germany">Germany</a>, <a href="https://en.wikipedia.org/wiki/Kosovo">Kosovo</a> etc.</p>
+
+<p>As it was the opening day, there weren’t many participants (about 12 in total) but that was enough for us to start a “round table of chairs” (with good chill music in the background, sponsored by my Bluetooth speaker 😂 and a nice space outside) where everyone would introduce themselves, what they do, what projects they contribute to, why they were attending the summit and more.</p>
+
+<p>After this round of intros, we began compiling the agenda (mostly a draft) entirely onsite with all the attendees proposing the topics they wanted to discuss during the event over a beer. As the time had changed, it was already dark at 5 PM, so it was a bit difficult to differentiate between us. Note for next time, add more lights if the gathering is done outside.</p>
+
+<p>Next up was dinner, we decided to eat at our usual restaurant of choice, <a href="https://osm.org/go/xexSLz5wT?m=">Mystic</a> (we always bring our guests there, the food is quite affordable and tasty; and no, this is not an advertisement, I just happen to like the food there).</p>
+
+<h3 id="november-3rd-first-day">November 3rd (first day)</h3>
+
+<p>The following Saturday morning (officially the 1st day of the Summit) started with new energies. The event started at 10.00 AM at Ofiçina and we started discussing on the topics we proposed the previous day and preparing a more curated agenda for the day.</p>
+
+<p><a href="../assets/img/posts/osd-agenda-sat-full.jpg"><img src="../assets/img/posts/osd-agenda-sat.jpg" alt="Saturday agenda" /></a></p>
+
+<p>We officially started the Summit by welcoming everyone by giving an intro to Open Source Design for newcomers that decided to join us in the Summit, following up with a short talk by <a href="https://twitter.com/halaszdavid">David</a> and <a href="https://twitter.com/terezanovotna_">Teresa</a> from <a href="https://redhat.com">Red Hat</a> about <a href="https://en.wikipedia.org/wiki/Systems_design">Design Systems</a>, and specifically about <a href="https://www.patternfly.org/">PatternFly</a>.</p>
+
+<p><a href="https://upload.wikimedia.org/wikipedia/commons/0/0a/Open_Source_Design_Summit_2018_-_79.jpg"><img src="../assets/img/posts/osd-david-tereza.jpg" alt="David and Tereza talk" /></a></p>
+
+<p>Next up we had a very interesting and involving workshop about Cut, Copy &amp; Paste from <a href="https://cameralibre.cc">Sam</a>. The workshop was there to teach beginners about the concept of git as a version control system (as designers usually have to work with git too, which is a showstopper for many at first). Thanks a lot Sam, it was a total blast!</p>
+
+<p><a href="../assets/img/posts/osd-sam-workshop-full.jpg"><img src="../assets/img/posts/osd-sam-workshop.jpg" alt="Sam's workshop" /></a></p>
+
+<p>After the workshop, we had lunch at 1 PM (we had the group photo before lunch too, but not going to share now, rather let you scroll down until the end of the article, as always) and restarted the sessions at 2 PM. In the next sessions, we talked about finalizing our <a href="https://en.wikipedia.org/wiki/Manifesto">Manifesto</a>, a topic we had been discussing for a long time <a href="https://discourse.opensourcedesign.net/t/open-source-design-manifesto/630">at our Discourse forum</a> and we think we finally have a ready-to-go version that will be published soon on the website (bravo and thanks to everyone involved).</p>
+
+<p>The following topic was about our upcoming events and where should Open Source Design focus on more, a nice discussion that happened outside, in the warm weather (really, Albania is warm even in November).</p>
+
+<p><a href="../assets/img/posts/osd-events-full.jpg"><img src="../assets/img/posts/osd-events.jpg" alt="Discussing about events" /></a></p>
+
+<p>The next topic was a sharing round where we shared our knowledge and skills, what we can do to help and change the current proprietary and closed-down system and provide help where it’s needed the most in open source. After, <a href="https://twitter.com/RenataGegaj">Renata</a> of our team shared some Usability Studies we accomplished before, such as <a href="https://ura.design/projects/thunderbird">Thunderbird</a> and <a href="https://ura.design/projects/i2p">I2P</a>. Later, Sam shared some info about the issue of Diffing SVG-s and how difficult it is to process it correctly and with consistent results, because each software tries to do it in their own way.</p>
+
+<p>Closing up at 5 PM, we cleaned up the place and prepared it for the next day and some of us had dinner 🍗 (traditional food at <a href="https://osm.org/go/xexSLiaQT?m=">Zgara Korçare 2</a>) and later on drinks 🍹 at <a href="https://osm.org/go/xexSOkmwR?m=">Nouvelle Vague</a> in Blloku area.</p>
+
+<h3 id="november-4th-final-day">November 4th (final day)</h3>
+
+<p>The last day (Sunday) started as usual, but this time at 10:30 AM. This final day was mostly marketing related (in the sense that we created a huge table with data) but more busy.</p>
+
+<p><a href="../assets/img/posts/osd-agenda-sun-full.jpg"><img src="../assets/img/posts/osd-agenda-sun.jpg" alt="Last day agenda" /></a></p>
+
+<p>We started by discussing about the Summit itself and community building (via local meetups). Then, we split into two groups, one inside and one outside. The one inside worked on finalizing the Manifesto meanwhile the one outside (which I directed) discussed about Design Tools, what each of us used, what can we use and bring new ideas into the table. This was a very important topic as we agreed that open source design tools projects need more dev feedback and also help in improving their UI/UX (most complained about GIMP and I can totally understand that).</p>
+
+<p>After these sessions, we had lunch 🥗 again at 1 PM and resumed the sessions at 2 PM.</p>
+
+<p>The whiteboard was filled with sticky notes 📌 and everyone brainstormed 💡 about different organizations/projects that had similar goals and intensions as Open Source Design.</p>
+
+<p><a href="../assets/img/posts/osd-whiteboard-sun-full.jpg"><img src="../assets/img/posts/osd-whiteboard-sun.jpg" alt="Whiteboard" /></a></p>
+
+<p>We discussed about ways to build up a bugdet that Open Source Design can use to extend its activity, changes we would be doing in the Open Source Design website, such as a new theme (maybe, a bit far fetched idea though), the structure of the organisation, the platforms we would use, the politics we would follow, <a href="https://www.wordaz.com/adbusting.html">Adbusting</a>, project outreach and how we could onboard new designers into the project.</p>
+
+<p>Once again, we wrapped up at 5 PM and announced the Summit as over and headed for <a href="https://osm.org/go/xexSkKB1Z?m=">Restorant Era 2</a> to eat dinner and then at <a href="https://osm.org/go/xexSkZbbG?m=">Komiteti</a> to drink something traditional such as <a href="https://en.wikipedia.org/wiki/Rak%C4%B1">raki</a>.</p>
+
+<p>This is basically (<strong>very detailed right?</strong>) what happened during the Open Source Design Summit 2018 in Tirana, Albania. All in all, I’d consider this a successful event and hope that it has some visible effects on the organisation and the future of Open Source Design.</p>
+
+<p>Oh, I almost forgot, as promised, here is the group photo 📸 from the Summit. Enjoy!</p>
+
+<p><a href="https://upload.wikimedia.org/wikipedia/commons/5/54/Open_Source_Design_Summit_2018_-_95.jpg"><img src="../assets/img/posts/osd-group-photo.jpg" alt="OSD Summit group photo" /></a></p>
+
+<p>Thanks to the support from <a href="https://stickermule.com">Stickermule</a>, <a href="https://mozilla.org">Mozilla</a>, <a href="https://phplist.com">phpList</a>, <a href="https://opentech.fund">Open Tech Fund</a>, <a href="https://redhat.com">Red Hat</a> &amp; <a href="https://nextcloud.com">Nextcloud</a> we were able to bring the largest celebration of the Open Source Design community in the city.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Wed, 14 Nov 2018 02:00:00 +0100</pubDate><link>https://lushka.al/osd-summit-2018/</link><guid isPermaLink="true">https://lushka.al/osd-summit-2018/</guid><category>design</category><category>summit</category><category>community</category><category>open source</category><category>software</category><category>article</category><category>report</category><category>blog</category></item><item><title>Thank you, Fedora</title><description><p>A few days ago it was Fedora’s 15th anniversary. To celebrate this date, the <a href="https://docs.fedoraproject.org/en-US/commops/">Fedora Community Operations Team</a> decided to organize the <a href="https://docs.fedoraproject.org/en-US/commops/appreciation-week/">Fedora Appreciation Week</a>. This event happens on the week of November 6th to coincide with the <a href="https://www.redhat.com/archives/fedora-announce-list/2003-November/msg00000.html">announcement of the project 15 years ago</a>.</p>
+
+<p>This week-long event celebrates the efforts of the Fedora Project contributors and it gives us an opportunity to share our thank you-s with the team. Appreciation can be anything, from an IRC message, a message on a mailing list, <a href="https://happinesspackets.fedorainfracloud.org/">Fedora Happiness Packets</a> or a blog post, such as the one you’re reading right now.</p>
+
+<h3 id="my-thank-you">My Thank You</h3>
+
+<p>My thank you to everyone in the Fedora Community is this blog post.</p>
+
+<p>Thanks to all the Fedora team and to every amazing Open Source community that contributed on hundreds of projects that compose this fantastic free and open source operating system!</p>
+
+<p>Thank you developers, QA-ers, DevOps engineers, <strong>designers</strong>, beta version testers, community members, volunteers, localizers, program managers and everyone else that helped the project during all these years.</p>
+
+<p>Thank you all for being such a kind and welcoming community. I’ve felt very appreciated and <strong>proud to be a Fedora Ambassador</strong> 🎉  and representer.</p>
+
+<h3 id="fedora-and-i">Fedora and I</h3>
+
+<p>I’ve been using Fedora as my main operating system for almost 3 years. So how did that happen? And why Fedora?</p>
+
+<p>I had been using Windows exclusively (I had used Ubuntu Linux before) up until the moment that I first took part in events organized at <a href="https://openlabs.cc">Open Labs Hackerspace</a> in Tirana, Albania. I realized that there were more distros around and decided to try Fedora. My first installation was Fedora 22 and it went smoothly, so I decided to keep it installed.</p>
+
+<p>Later on, I participated in some more Fedora events at the local community (<a href="https://communityblog.fedoraproject.org/fedora-translation-sprint-5-days-50-members-20-thousand-words/">Localizations</a>) and then it grew onto me. Everyone was so <strong>welcoming and helpful</strong>, so I started using Fedora more and it became my preferred 💻  and default operating system (my favorite DE is <a href="https://spins.fedoraproject.org/xfce">XFCE</a>.</p>
+
+<p>After contributing to the project, I decided to apply for the Ambassador position and was accepted. From the start I’ve been spreading the word about Fedora and organizing many events in the local hackerspace and not only, facilitated the involvement of Fedora at <a href="https://oscal.openlabs.cc">OSCAL</a>, our biggest early conference etc.</p>
+
+<h3 id="why-fedora">Why Fedora</h3>
+
+<p>Fedora is a very polished, stable and secure Linux-based OS. With all its variants, like <a href="https://spins.fedoraproject.org">Spins</a> and <a href="https://labs.fedoraproject.org">Labs</a>, I’m pretty sure there will be something for everyone. If you have never used it, I would suggest that you try it, regardless of your technical background. If you use another distro, I would recommend you to try Fedora 29.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Sat, 10 Nov 2018 11:00:00 +0100</pubDate><link>https://lushka.al/thank-you-fedora/</link><guid isPermaLink="true">https://lushka.al/thank-you-fedora/</guid><category>fedora</category><category>appreciation</category><category>week</category><category>event</category><category>software</category><category>foss</category><category>article</category><category>appreciation</category><category>blog</category></item><item><title>My Google-free Android life</title><description><p>People have been asking me a lot lately about my phone, my Android setup and how I manage to use my smartphone without Google Services. Well, this is a post that aims to address precisely that. I would like to make this article really beginner-friendly so I’ll try to go slow, going through things one by one and including screenshots so you can have a better view on how things happen and work like.</p>
+
+<p>At first I’ll start with why Google Services are (imo) bad for your device. I could cut it short and guide you to this <a href="https://stallman.org/google.html">post</a> by <a href="https://en.wikipedia.org/wiki/Richard_Stallman">Richard Stallman</a>, but I’m grabbing a few main points from it and adding them here.</p>
+
+<ul>
+  <li>Nonfree software required
+    <ul>
+      <li>In general, most Google services require running nonfree Javascript code. Nowadays, nothing whatsoever appears if Javascript is disabled, even making a Google account requires running nonfree software (Javascript sent by the site), same thing for logging in.</li>
+    </ul>
+  </li>
+  <li>Surveillance
+    <ul>
+      <li>Google quietly combines its ad-tracking profiles with its browsing profiles and stores a huge amount of data on each user.</li>
+    </ul>
+  </li>
+  <li>Terms of Service
+    <ul>
+      <li>Google cuts off accounts for users that resell Pixel phones. They lose access to all of their mail and documents stored in Google servers under that account.</li>
+    </ul>
+  </li>
+  <li>Censorship
+    <ul>
+      <li>Amazon and Google have cut off domain-fronting, a feature used to enable people in tyrannical countries to reach communication systems that are banned there.</li>
+      <li>Google has agreed to perform special censorship of Youtube for the government of Pakistan, deleting views that the state opposes. This will help the illiberal Pakistani state suppress dissent.</li>
+      <li>Youtube’s “content ID” automatically deletes posted videos in a way copyright law does not require.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>These are just a few reasons, but you can read the post by RMS I linked above in which he tries to explain these points in detail. Although it may look like a tinfoil hat reaction to you, all these actions already happen everyday in real life.</p>
+
+<h3 id="next-on-the-list-my-setup-and-a-tutorial-on-how-i-achieved-it">Next on the list, my setup and a tutorial on how I achieved it</h3>
+
+<p>I own a <strong><a href="https://www.gsmarena.com/xiaomi_redmi_note_5_pro-8893.php">Xiaomi Redmi Note 5 Pro</a></strong> smartphone (codename <strong>whyred</strong>), produced in China by <a href="https://en.wikipedia.org/wiki/Xiaomi">Xiaomi</a>, which I bought for around 185 EUR 4 months ago (from the time of writing this post).</p>
+
+<p>Now you might be thinking, ‘but why did you buy a Chinese brand, they are not reliable’. Yes, it is not made from the usuals as you would expect, such as Samsung (which people often associate with Android, and is plain wrong), OnePlus, Nokia etc, but you should know almost every phone is produced in China.</p>
+
+<p>There were a few reasons I chose this phone, first one of course being the price. It is a quite <strong>budget-friendly</strong> device, so most people are able to afford it. Next one would be the specs, which on paper (not only) are pretty decents for the price tag.
+With a 6 inch screen (Full HD resolution), a <strong>4000 mAh battery</strong> (superb battery life), 4GB of RAM, 64GB of storage, dual back cameras (12MP + 5MP), a front camera with flash (13MP) and a decent efficient Snapdragon 636, it was probably the best choice at that moment.</p>
+
+<p>The issue with it was that it came with <a href="https://en.wikipedia.org/wiki/MIUI">MIUI</a>, the Android skin that Xiaomi ships with most of its devices (except the Android One project devices). Yes, it is not that horrible, it has some extra features, but the problems lie deeper within. One of the reasons these devices from Xiaomi are so cheap (afaik they only have 5-10% win margin from sales) is that <strong>they include data mining and ads in the system altogether with MIUI</strong>. In this way, the system apps requires extra unnecessary permissions that mine your data and bombard you with ads, from which Xiaomi earns money.</p>
+
+<p>Funnily enough, the Weather app included wanted access to my contacts and to make calls, why would it need that if it would just show the weather? Another case was with the Recorder app, it also required contacts and internet permissions, probably to send those recordings back to Xiaomi.</p>
+
+<p>To fix this, I’d have to format the phone and get rid of MIUI. This has become increasingly difficult with the latest phones in the market.</p>
+
+<p>The concept of formatting a phone is simple, you remove the existing system and install a new one of your preference (Android-only in this case). To do that, you have to have your <a href="https://forum.xda-developers.com/wiki/Bootloader">bootloader</a> unlocked.</p>
+
+<blockquote>
+  <p>A bootloader is a computer program that loads an operating system (OS) or runtime environment for the computer after completion of the self-tests.
+— <a href="https://en.wikipedia.org/wiki/Booting">Wikipedia</a></p>
+</blockquote>
+
+<p>The problem here is that Xiaomi has a specific policy about the bootloader unlocking. A few months ago, the process was like this.
+You would have to <a href="https://en.miui.com/unlock/">make a request</a> to Xiaomi to obtain an unlock code for your phone, by giving a valid reason, but this would not always work, as they could just refuse your request without reasons and explanation.</p>
+
+<p>Now, that process has changed. You’ll have to download a specific software from Xiaomi, called <a href="http://www.miui.com/unlock/apply.php">Mi Unlock</a>, install it in your Windows, Mac or Linux PC, <a href="https://www.youtube.com/watch?v=7zhEsJlivFA">activate Debugging Settings in Developer Options</a> on your phone, reboot to the bootloader mode (by holding the Volume Down + Power button while the phone is off) and connect the phone to your computer to start a process called “Approval”. This process starts a timer on the Xiaomi servers that will allow you to <strong>unlock the phone only after a period of 15 days</strong> (or a month in some rare cases, totally random) goes by.</p>
+
+<p><img src="../assets/img/posts/mi-unlock.png" alt="Mi Unlock app" /></p>
+
+<p>After this period of 15 days has passed, you have to re-connect your phone and do the same procedure as above, then by pressing the Unlock button your bootloader will be unlocked and this will allow you to install other ROM-s (systems). <strong>Careful, make sure to backup your data because unlocking the bootloader deletes everything in the phone</strong>.</p>
+
+<p>The next step would be finding a system (<a href="https://www.xda-developers.com/what-is-custom-rom-android/">ROM</a>) that works for your device. I searched through the <a href="https://forum.xda-developers.com/">XDA Developers Forum</a>, which is a place where Android developers and users exchange ideas, apps etc. Fortunately, my phone is quite popular so it had <a href="https://forum.xda-developers.com/redmi-note-5-pro">its own forum category</a>. There, I skimmed through some popular ROM-s for my device and decided to use the <a href="https://forum.xda-developers.com/redmi-note-5-pro/development/rom-aosip-8-1-t3804473">AOSiP ROM</a> (AOSiP standing for Android Open Source illusion Project).</p>
+
+<hr />
+
+<p><strong>EDIT</strong>: Someone emailed me to say that my article is exactly what <a href="https://e.foundation">/e/</a> does and is targeted to. I wanted to say thank you for reaching out but that is <em>not true</em> at all. The reasoning behind my opinion about /e/ can also be found in this <a href="https://ewwlo.xyz/evil">website</a>, but I’ll list a few of the reasons here.</p>
+
+<p>eelo is a “foundation” that got over 200K €  in funding from Kickstarter and IndieGoGo, promising to create a mobile OS and web services that are open and secure and protect your privacy.</p>
+
+<ol>
+  <li>Their OS is based on LineageOS 14.1 (Android 7.1) with microG and other open source apps with it, which already exists for a long time now and it’s called <a href="https://lineage.microg.org/">Lineage for microG</a>.</li>
+  <li>Instead of building all apps from the source code, they download the APKs from <a href="https://apkpure.com/">APKPure</a> and put them in the ROM, without knowing if those APKs contain proprietary code/malware in them.</li>
+  <li>At one point, they were literally just removing the Lineage copyright header from their code and adding theirs.</li>
+  <li>They love to delete negative feedback and censor their users’ opinions in their Telegram group chat.</li>
+</ol>
+
+<p>In conclusion, I <strong>don’t recommend using /e/</strong> ROM-s (at least until now).</p>
+
+<hr />
+
+<p>Another thing you would likely want to do is have <a href="https://lifehacker.com/5789397/the-always-up-to-date-guide-to-rooting-any-android-phone">root access</a> to your phone, to make it truly yours and modify files in the system, such as use a system-wide adblocker etc. To do this, I decided to use <a href="https://forum.xda-developers.com/apps/magisk/official-magisk-v7-universal-systemless-t3473445">Magisk</a>, a godsend app developed by a student to help you gain root access on your device and install what are called <a href="https://forum.xda-developers.com/apps/magisk">modules</a>, basically software.</p>
+
+<p>After downloading the ROM and Magisk, I had to install them on my phone. To do that, I moved the files to my SD card on the phone. Now, to install the system, I had to use something called a <a href="http://www.smartmobilephonesolutions.com/content/android-system-recovery">recovery system</a>. The one I use is called <a href="https://dl.twrp.me/whyred/">TWRP</a> (standing for TeamWin Recovery Project), a popular solution.</p>
+
+<p>To install the recovery system (sounds hard, I know), I had to <a href="https://lifehacker.com/5789397/the-always-up-to-date-guide-to-rooting-any-android-phone">flash</a> the file on the phone. To do that, I connected my phone with the computer (Fedora Linux system) and with something called <a href="https://developer.android.com/studio/command-line/adb">ADB Tools</a> I issued a command that overwrites the system recovery with the custom one I had.</p>
+
+<blockquote>
+  <p>fastboot flash recovery twrp.img</p>
+</blockquote>
+
+<p>After this was done, I turned off the phone and kept Volume Up + Power button pressed until I saw the TWRP screen show up. That meant I was good to go and it was ready to receive my commands.</p>
+
+<p><img src="../assets/img/posts/android-twrp.png" alt="TWRP screen" /></p>
+
+<p>Next step was to <strong>issue a Wipe command</strong>, necessary when you first install a custom ROM on your phone. As you can see from the image above, the Wipe command clears the Data, Cache and Dalvik (there is also an advanced option that allows us to tick a box to delete the System one too, as we don’t need the old one anymore).</p>
+
+<p>This takes a few moments and after that, your phone is basically clean. Now it’s time to <strong>install the system</strong>. By pressing the Install button on the main screen, we select the zip file we added there before (the ROM file) and swipe the screen to install it. Next, we have to install Magisk, which gives us root access to the device.</p>
+
+<hr />
+
+<p><strong>EDIT</strong>: As some more experienced/power Android users might have noticed until now, there is no <a href="https://opengapps.org/">GApps</a> (Google Apps) included. This is what we call GApps-less in the Android world, not having those packages installed at all.</p>
+
+<p>Note that one of the downsides of not having Google Services installed is that some of your apps might not work, for example their notifications might take longer to arrive or might not even work at all (this is what happens with Mattermost app for me). This happens because these apps use <a href="https://developers.google.com/cloud-messaging/">Google Cloud Messaging</a> (now called <a href="https://firebase.google.com/docs/cloud-messaging/">Firebase</a>) to wake the phone and push notifications to your phone.</p>
+
+<p>You can solve this (partially) by installing and using <a href="https://microg.org/">microG</a> which provides some features of Google Services but allows for more control on your side. I don’t recommend using this because it still helps Google Services and you don’t really give up on them, but it’s a good start if you want to quit Google slowly and not go cold turkey on it.</p>
+
+<hr />
+
+<p>After successfully installing both, now we reboot the phone and <strong>tada</strong> 🎉, we are in the main screen.</p>
+
+<h3 id="next-part-installing-the-apps-and-configuring-everything">Next part, installing the apps and configuring everything</h3>
+
+<p>This is where things start to get easier. To install the apps, I use <a href="https://f-droid.org/">F-Droid</a>, an alternative app store that includes <strong>only free and open source apps</strong>. If you need apps that are not available there, you can use <a href="https://f-droid.org/en/packages/com.dragons.aurora/">Aurora Store</a>, a client to download apps from the Play Store without using your Google account or getting tracked.</p>
+
+<p>F-Droid has what are called repos, a “storehouse” that contains apps you can install. I use the default ones and have added another one from <a href="https://android.izzysoft.de/repo">IzzyOnDroid</a>, that contains some more apps not available from the default F-Droid repo and is updated more often.</p>
+
+<p><img src="../assets/img/posts/android-fdroid-repos.jpg" alt="My repos" /></p>
+
+<p>Below you will find a list of the apps I have installed, what they replace and their use.</p>
+
+<ul>
+  <li><a href="https://f-droid.org/en/packages/org.adaway">AdAway</a> &gt; AdBlocker for the system, blocks ads everywhere using hosts file</li>
+  <li><a href="https://f-droid.org/en/packages/dev.ukanth.ufirewall">AfWall+</a> &gt; A firewall that allows me to block unwanted connections</li>
+  <li><a href="https://f-droid.org/en/packages/com.amaze.filemanager">Amaze</a> &gt; Replaces the system file manager, allows for root access to files and also has zip/unzip capabilities</li>
+  <li><a href="https://f-droid.org/en/packages/org.xphnx.ameixa">Ameixa</a> &gt; Icon pack that has many icons for your apps</li>
+  <li><a href="https://f-droid.org/en/packages/org.shadowice.flocke.andotp">andOTP</a> &gt; Replaces Google Authenticator/Authy, a TOTP app you can use to login on sites and accounts where you have 2FA enabled, allows backups and locking with PIN</li>
+  <li><a href="https://f-droid.org/packages/com.menny.android.anysoftkeyboard/">AnySoftKeyboard/AOSP Keyboard</a> &gt; Open Source keyboard, it has many themes and language packs, I am also part of this <a href="https://anysoftkeyboard.github.io">project</a></li>
+  <li><a href="https://f-droid.org/en/packages/com.github.axet.audiorecorder">Audio Recorder</a> &gt; Does what it says, allows you to record audio files in different formats from the microphone</li>
+  <li><a href="https://f-droid.org/en/packages/com.slash.batterychargelimit">Battery Charge Limit</a> &gt; Automatically stops charging the phone when it reaches 80% to lower battery wear and increase longevity</li>
+  <li><a href="https://f-droid.org/en/packages/at.bitfire.davdroid">DAVx5</a> &gt; This is one of my most-used apps, it basically replaces Google Contacts, Google Calendar and Google Tasks for me, it is connected to <a href="https://cloud.lushka.al">my Nextcloud instance</a> and I have control over my data</li>
+  <li><a href="https://f-droid.org/en/packages/org.sufficientlysecure.viewer">Document Viewer</a> &gt; A viewer app that can open hundreds of file formats, fast and lightweight</li>
+  <li><a href="https://gitlab.com/Nick80835/DeezLoader-Android/">Deezloader Remix</a> (an app that allows me to download high quality MP3 files from Deezer)</li>
+  <li><a href="https://f-droid.org/en/packages/de.tap.easy_xkcd">Easy xkcd</a> &gt; An xkcd comics reader, I love these comics</li>
+  <li><a href="https://f-droid.org/en/packages/ws.xsoh.etar">Etar</a> &gt; Calendar app, replaces Google Calendar, works with DAVx5</li>
+  <li><a href="https://f-droid.org/en/packages/com.fastaccess.github.libre">FastHub-Libre</a> &gt; A GitHub client, entirely FOSS, useful if you use GitHub extensively like I do</li>
+  <li><a href="https://f-droid.org/en/packages/org.mozilla.fennec_fdroid">Fennec F-Droid</a> &gt; Alternative to Google Chrome and others, a branded Firefox browser for F-Droid, without proprietary blobs/binaries that is updated and allows to install extensions to improve browsing experience</li>
+  <li><a href="https://f-droid.org/en/packages/nodomain.freeyourgadget.gadgetbridge">Gadgetbridge</a> &gt; Alternative to Mi Fit, application that is used to pair Xiaomi hardware with the phone and track your health, steps, sleep etc.</li>
+  <li><a href="https://f-droid.org/en/packages/com.fsck.k9">K-9 Mail</a> &gt; Email client, replaces GMail app, customizable and can add as many email accounts as you wish</li>
+  <li><a href="https://f-droid.org/en/packages/ch.deletescape.lawnchair.plah">Lawnchair</a> &gt; Launcher, can replace Nova Launcher or Pixel Launcher, allows customization and various changes, also supports icon packs and more</li>
+  <li><a href="https://f-droid.org/en/packages/com.mattermost.mattermost">Mattermost</a> &gt; App that allows you to connect to a Mattermost server, Mattermost is an alternative to Slack</li>
+  <li><a href="https://f-droid.org/en/packages/org.schabi.newpipe">NewPipe</a> &gt; The best YouTube client IMO, replaces YouTube, it is entirely FOSS, gets rid of YouTube ads, lowers data usage, allows for background play, allows you to download video/audio etc. JUST TRY IT</li>
+  <li><a href="https://f-droid.org/en/packages/fr.unix_experience.owncloud_sms">Nextcloud SMS</a> &gt; Allows me to backup/sync my SMS to my Nextcloud instance</li>
+  <li><a href="https://f-droid.org/en/packages/it.niedermann.owncloud.notes">Nextcloud Notes</a> &gt; Allows me to create, edit, delete, share notes and sync/backup to my Nextcloud instance</li>
+  <li><a href="https://f-droid.org/en/packages/org.dmfs.tasks">OpenTasks</a> &gt; Allows me to create, edit, delete tasks and sync them up with my Nextcloud instance</li>
+  <li><a href="https://f-droid.org/en/packages/net.osmand.plus">OsmAnd~</a> &gt; A map app, alternative to Google Maps, uses <a href="https://openstreetmap.org">OpenStreetMap</a>, allows for offline maps download and navigation</li>
+  <li><a href="https://f-droid.org/en/packages/com.moez.QKSMS">QKSMS</a> &gt; My favorite SMS app, replaces stock Messaging app, has a beautiful interface, allows backups, customization, has delayed sending feature etc.</li>
+  <li><a href="https://f-droid.org/en/packages/com.wangdaye.mysplash">Resplash/Mysplash</a> &gt; Allows you to download beautiful and endless wallpapers from <a href="https://unsplash.com">Unsplash</a>, all free to use and modify</li>
+  <li><a href="https://f-droid.org/en/packages/com.orpheusdroid.screenrecorder">ScreenCam</a> &gt; A screen recorder, allows various customizations and recording modes, no ads and free</li>
+  <li><a href="https://f-droid.org/en/packages/de.t_dankworth.secscanqr">SecScanQR</a> &gt; A QR scanner app, really fast and lightweight</li>
+  <li><a href="https://f-droid.org/en/packages/mobi.omegacentauri.SendReduced">Send Reduced Free</a> &gt; This app allows you to share big images instantly by reducing them and removing PII (personally identifiable information) before sending them to someone</li>
+  <li><a href="https://f-droid.org/en/packages/me.ccrama.redditslide/">Slide</a> &gt; Open source Reddit client</li>
+  <li><a href="https://f-droid.org/en/packages/org.telegram.messenger">Telegram FOSS</a> &gt; A clean version of Telegram Android client without trackers and Google Services</li>
+  <li><a href="https://f-droid.org/en/packages/com.genonbeta.TrebleShot">TrebleShot</a> &gt; This ingenius app allows you to share files over a WiFi connection, in a really fast way, without even having internet access, to other devices</li>
+  <li><a href="https://f-droid.org/en/packages/com.keylesspalace.tusky">Tusky</a> &gt; Tusky is a client for the <a href="https://joinmastodon.org/">Mastodon</a> platform (Mastodon replaces Twitter)</li>
+  <li><a href="https://f-droid.org/en/packages/com.physphil.android.unitconverterultimate">Unit Converter Ultimate</a> &gt; This app allows me to convert between 200 units in a snap, it works fully offline and it’s fast</li>
+  <li><a href="https://f-droid.org/en/packages/com.poupa.vinylmusicplayer">Vinyl Music Player</a> &gt; My preferred music player app, replaces Google Play Music or whatever you have already installed on your phone, it has a beautiful interface and many features</li>
+  <li><a href="https://f-droid.org/en/packages/be.mygod.vpnhotspot">VPN Hotspot</a> &gt; This app allows me to share my VPN while I have enabled my phone to be a hotspot, so I can browse securely even on my laptop without doing anything else</li>
+</ul>
+
+<p>This is pretty much <strong>my list of the most useful F-Droid apps</strong> I use, but unfortunately these are <em>NOT</em> the only apps I use. The proprietary apps I use (I know, I might sound a hypocrite, but not everything is replaceable, not yet at least) are as below:</p>
+
+<ul>
+  <li>Google Camera (coupled with Camera API 2, needs basic microG from F-Droid to work)</li>
+  <li>MyVodafoneAL (the carrier app)</li>
+  <li>ProtonMail (email app)</li>
+  <li>Titanium Backup (to backup my app data, wifi passwords, calls log etc.)</li>
+  <li>WhatsApp (E2E proprietary messaging app, almost everyone I know has it)</li>
+</ul>
+
+<p>This is pretty much it, all the apps I use on my phone. <strong>The configs are then pretty simple and straightforward and I can give a few tips</strong>.</p>
+
+<ol>
+  <li>Read and check the permissions of apps carefully, don’t click ‘Install’ mindlessly.</li>
+  <li>Try to use as many open source apps as possible, they both respect your privacy and are free (as in both free beer and freedom).</li>
+  <li>Use a VPN as much as you can, find a reputable one and don’t use free ones, otherwise you get to be the product and you’ll get your data harvested.</li>
+  <li>Don’t keep your WiFi/mobile data/location on all the time, it might be a security risk.</li>
+  <li>Try not to rely on fingerprint unlock only, or better yet use only PIN/password/pattern unlock, as biometric data can be cloned and used against you, for example to unlock your phone and steal your data.</li>
+</ol>
+
+<p>And as a bonus for reading far down here, <strong>a screenshot of my home screen</strong> right now.</p>
+
+<p><img src="../assets/img/posts/android-screenshot.jpg" alt="Screenshot" /></p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Thu, 08 Nov 2018 11:00:00 +0100</pubDate><link>https://lushka.al/my-android-setup/</link><guid isPermaLink="true">https://lushka.al/my-android-setup/</guid><category>android</category><category>privacy</category><category>security</category><category>open source</category><category>software</category><category>google</category><category>foss</category><category>beginner</category><category>article</category><category>how-to</category><category>blog</category></item><item><title>Threat Modeling</title><description><p><strong>Note: This is a mirror (with minor modifications) of the original article posted by the <a href="https://www.eff.org/about">EFF</a> <a href="https://ssd.eff.org/en/module/assessing-your-risks">here</a>.</strong></p>
+
+<p>Trying to protect all your data from everyone all the time is impractical and exhausting. Security is a process, and through thoughtful planning, you can assess what’s right for you. <strong>Security isn’t about the tools you use or the software you download</strong>. It begins with understanding the unique threats you face and how you can counter those threats.</p>
+
+<p>In computer security, a <strong>threat is a potential event that could undermine your efforts to defend your data</strong>. You can counter the threats you face by determining what you need to protect and from whom you need to protect it. This process is called “threat modeling.”</p>
+
+<p>This guide will teach you how to threat model, or how to assess your risks for your digital information and how to determine what solutions are best for you.</p>
+
+<p>What might threat modeling look like? Let’s say you want to keep your house and possessions safe, here are a few questions you might ask:</p>
+
+<p><em>What do I have inside my home that is worth protecting?</em></p>
+
+<ul>
+  <li>Assets could include: jewelry, electronics, financial documents, passports, or photos</li>
+</ul>
+
+<p><em>Who do I want to protect it from?</em></p>
+
+<ul>
+  <li>Adversaries could include: burglars, roommates, or guests</li>
+</ul>
+
+<p><em>How likely is it that I will need to protect it?</em></p>
+
+<ul>
+  <li>Does my neighborhood have a history of burglaries? How trustworthy are my roommates/guests? What are the capabilities of my adversaries? What are the risks I should consider?</li>
+</ul>
+
+<p><em>How bad are the consequences if I fail?</em></p>
+
+<ul>
+  <li>Do I have anything in my house that I cannot replace? Do I have the time or money to replace these things? Do I have insurance that covers goods stolen from my home?</li>
+</ul>
+
+<p><em>How much trouble am I willing to go through to prevent these consequences?</em></p>
+
+<ul>
+  <li>Am I willing to buy a safe for sensitive documents? Can I afford to buy a high-quality lock? Do I have time to open a security box at my local bank and keep my valuables there?</li>
+</ul>
+
+<p>Once you have asked yourself these questions, you are in a position to assess what measures to take. If your possessions are valuable, but the risk of a break-in is low, then you may not want to invest too much money in a lock. But, if the risk is high, you’ll want to get the best lock on the market, and consider adding a security system.</p>
+
+<p>Building a threat model will help you to understand <strong>threats that are unique to you</strong> and to evaluate your assets, your adversaries, and your adversaries’ capabilities, along with the likelihood of risks you face.</p>
+
+<h2 id="what-is-threat-modeling-and-where-do-i-start">What is threat modeling and where do I start?</h2>
+
+<p>Threat modeling helps you identify threats to the things you value and determine from whom you need to protect them. When building a threat model, answer these five questions:</p>
+
+<ol>
+  <li>What do I want to protect?</li>
+  <li>Who do I want to protect it from?</li>
+  <li>How bad are the consequences if I fail?</li>
+  <li>How likely is it that I will need to protect it?</li>
+  <li>How much trouble am I willing to go through to try to prevent potential consequences?</li>
+</ol>
+
+<p>Let’s take a closer look at each of these questions.</p>
+
+<h3 id="what-do-i-want-to-protect">What do I want to protect?</h3>
+
+<p>An “asset” is something you value and want to protect. In the context of digital security, an asset is usually some kind of information. For example, your emails, contact lists, instant messages, location, and files are all possible assets. Your devices may also be assets.</p>
+
+<p><em>Make a list of your assets: data that you keep, where it’s kept, who has access to it, and what stops others from accessing it.</em></p>
+
+<h3 id="who-do-i-want-to-protect-it-from">Who do I want to protect it from?</h3>
+
+<p>To answer this question, it’s important to identify who might want to target you or your information. A person or entity that poses a threat to your assets is an “adversary.” Examples of potential adversaries are your boss, your former partner, your business competition, your government, or a hacker on a public network.</p>
+
+<p><em>Make a list of your adversaries, or those who might want to get ahold of your assets. Your list may include individuals, a government agency, or corporations.</em></p>
+
+<blockquote>
+  <p>Depending on who your adversaries are, under some circumstances this list might be something you want to destroy after you’re done threat modeling.</p>
+</blockquote>
+
+<h3 id="how-bad-are-the-consequences-if-i-fail">How bad are the consequences if I fail?</h3>
+
+<p>There are many ways that an adversary can threaten your data. For example, an adversary can read your private communications as they pass through the network, or they can delete or corrupt your data.</p>
+
+<p>The motives of adversaries differ widely, as do their attacks. A government trying to prevent the spread of a video showing police violence may be content to simply delete or reduce the availability of that video. In contrast, a political opponent may wish to gain access to secret content and publish that content without you knowing.</p>
+
+<p>Threat modeling involves understanding how bad the consequences could be if an adversary successfully attacks one of your assets. To determine this, you should consider the capability of your adversary. For example, your mobile phone provider has access to all your phone records and thus has the capability to use that data against you. A hacker on an open Wi-Fi network can access your unencrypted communications. Your government might have stronger capabilities.</p>
+
+<p><em>Write down what your adversary might want to do with your private data.</em></p>
+
+<h3 id="how-likely-is-it-that-i-will-need-to-protect-it">How likely is it that I will need to protect it?</h3>
+
+<p>Risk is the likelihood that a particular threat against a particular asset will actually occur. It goes hand-in-hand with capability. While your mobile phone provider has the capability to access all of your data, the risk of them posting your private data online to harm your reputation is low.</p>
+
+<p>It is important to distinguish between threats and risks. While a threat is a bad thing that can happen, risk is the likelihood that the threat will occur. For instance, there is a threat that your building might collapse, but the risk of this happening is far greater in San Francisco (where earthquakes are common) than in Stockholm (where they are not).</p>
+
+<p>Conducting a risk analysis is both a personal and a subjective process; not everyone has the same priorities or views threats in the same way. Many people find certain threats unacceptable no matter what the risk, because the mere presence of the threat at any likelihood is not worth the cost. In other cases, people disregard high risks because they don’t view the threat as a problem.</p>
+
+<p><em>Write down which threats you are going to take seriously, and which may be too rare or too harmless (or too difficult to combat) to worry about.</em></p>
+
+<h3 id="how-much-trouble-am-i-willing-to-go-through-to-try-to-prevent-potential-consequences">How much trouble am I willing to go through to try to prevent potential consequences?</h3>
+
+<p>Answering this question requires conducting the risk analysis. Not everyone has the same priorities or views threats in the same way.</p>
+
+<p>For example, an attorney representing a client in a national security case would probably be willing to go to greater lengths to protect communications about that case, such as using encrypted email, than a mother who regularly emails her daughter funny cat videos.</p>
+
+<p><em>Write down what options you have available to you to help mitigate your unique threats. Note if you have any financial constraints, technical constraints, or social constraints.</em></p>
+
+<h2 id="threat-modeling-as-a-regular-practice">Threat modeling as a regular practice</h2>
+
+<p>Keep in mind your threat model can change as your situation changes. Thus, conducting frequent threat modeling assessments is good practice.</p>
+
+<blockquote>
+  <p>Create your own threat model based on your own unique situation. Then mark your calendar for a date in the future. This will prompt you to review your threat model and check back in to assess whether it’s still relevant to your situation.</p>
+</blockquote>
+
+<p>All content is licensed under CC BY (<a href="https://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution License</a>).</p>
+</description><pubDate>Wed, 07 Nov 2018 13:00:00 +0100</pubDate><link>https://lushka.al/threat-modeling/</link><guid isPermaLink="true">https://lushka.al/threat-modeling/</guid><category>privacy</category><category>security</category><category>communication</category><category>risks</category><category>software</category><category>article</category><category>how-to</category><category>blog</category></item><item><title>Fedora Women's Day 2018</title><description><p>As every year, the Fedora Diversity Team decided to organize the <a href="https://fedoraproject.org/wiki/Category:Fedora_Women's_Day">Fedora Women’s Day</a> event, an event that also happened in Tirana, Albania. The official day for that would be around mid September, but unfortunately being an organizer of the <a href="https://libocon.org/2018">LibreOffice Conference</a> too, things got a bit out of hand and the event was postponed until the 30th of October 2018.</p>
+
+<p>We decided to organize this event at the <a href="http://hermanngmeiner.vet.al/">“Hermann Gmeiner”</a> technical high school in Tirana.</p>
+
+<p>The event started at 11:30 AM at the auditorium of the high school. The participants were ALL girls, a whole 58 of them to be exact. They were eager to learn about the Fedora Project and how to get involved and contribute in open source.</p>
+
+<p><a href="../assets/img/posts/fwd-participants-full.jpg"><img src="../assets/img/posts/fwd-participants.jpg" alt="Participants" /></a></p>
+
+<p>Jona started by introducing us to the participants and where we came from, about <a href="https://openlabs.cc">Open Labs</a> as the root origin from where the Albanian Fedora community was born in, about Fedora and other projects that strongly cooperate with it etc.</p>
+
+<p><a href="../assets/img/posts/fwd-jona-talking-full.jpg"><img src="../assets/img/posts/fwd-jona-talking.jpg" alt="Jona talking about Fedora" /></a></p>
+
+<p>The participants had questions and we were more than happy to answer those. Most of them hadn’t heard about <a href="https://en.wikipedia.org/wiki/Linux_kernel">Linux</a> before or used it, so this was a good opportunity for me to start from zero and explain Linux and distros with an easy terminology, so beginners could also understand it.</p>
+
+<p>After, Jona explained more about the Fedora Women’s Day and the Diversity &amp; Inclusion Team in Fedora, some initiatives that the girls could participate in, such as <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a>, <a href="https://codein.withgoogle.com/">Google Code-In</a>, <a href="https://railsgirlssummerofcode.org/">Rails Girls Summer of Code</a>, <a href="https://www.outreachy.org/">Outreachy</a> etc.</p>
+
+<p><a href="../assets/img/posts/fwd-jona-women-full.jpg"><img src="../assets/img/posts/fwd-jona-women.jpg" alt="Jona talking about initiatives" /></a></p>
+
+<p>As we were approaching the end of the event (about 2 hours in total), I prepared the food (delicious muffins 🍩) and drinks 🥤 for the participants, and of course, the swag table, where the girls could take some stickers and spread the love for Fedora ❤️.</p>
+
+<p><a href="../assets/img/posts/fwd-stickers-full.jpg"><img src="../assets/img/posts/fwd-stickers.jpg" alt="Stickers table" /></a></p>
+
+<p><a href="../assets/img/posts/fwd-food-full.jpg"><img src="../assets/img/posts/fwd-food.jpg" alt="Muffins and drinks" /></a></p>
+
+<p>Everyone got a muffin and discussed a few minutes in groups with each other 👩‍💻 about the event and we answered a few questions some students had.</p>
+
+<p><a href="../assets/img/posts/fwd-students-full.jpg"><img src="../assets/img/posts/fwd-students.jpg" alt="Students eating" /></a></p>
+
+<p>To wrap up the event, as always, we had a group photo 📸 (not everyone was there, they were shy). Funnily enough, I was the only guy in a room full of girls, haha.</p>
+
+<p><a href="../assets/img/posts/fwd-photo-full.jpg"><img src="../assets/img/posts/fwd-photo.jpg" alt="Group Photo" /></a></p>
+
+<p>All in all, it was a successful event and we’ll try to organize more in the upcoming future.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Sat, 03 Nov 2018 13:00:00 +0100</pubDate><link>https://lushka.al/fedora-women-day-2018/</link><guid isPermaLink="true">https://lushka.al/fedora-women-day-2018/</guid><category>fedora</category><category>event</category><category>community</category><category>open source</category><category>diversity</category><category>article</category><category>report</category><category>blog</category></item><item><title>LibreOffice Hackfest Munich 2018</title><description><p>The past month (end of October) I participated at the <a href="https://wiki.documentfoundation.org/Hackfest/Muenchen2018">LibreOffice Hackfest in Munich, Germany</a>.</p>
+
+<p>After the <a href="https://libocon.org">LibreOffice Conference</a> we organized in September, the <a href="https://openlabs.cc">Open Labs</a> community had a follow-up call with LibreOffice developers about future contributions and meetings. One of the ideas <a href="https://skyfromme.wordpress.com/">Bjorn</a> proposed, was to create a team of contributors that want to learn and contribute to the core code of LibreOffice.</p>
+
+<p>This idea got a positive feedback from the community and now we have a group of people getting started C++ and learning how to contribute.</p>
+
+<p><a href="https://twitter.com/IzabelBakollari/">Izabela Bakollari</a> and I attended the Hackfest in Munich hosted by <a href="https://module.cib.de/">modulE</a> powered by <a href="https://cib.de/">CIB</a>.</p>
+
+<p>On the first day, we started by introducing ourselves and what we would work on during the weekend. I discussed with Heiko and others about some UX tickets and the idea of separating the LibreOffice and The Document Foundation branding from each other.</p>
+
+<p><img src="../assets/img/posts/hackfest-opening.jpg" alt="Hackfest opening" /></p>
+
+<p>In the evening I got to <a href="https://mobile.twitter.com/floeff/status/1055909904693780480">cook some delicious pasta</a> (Penne all’arrabbiata &amp; Fusilli radicchio and gorgonzola) together with Marina and everyone seemed to have enjoyed the food (and the beer too).</p>
+
+<p><img src="../assets/img/posts/hackfest-pasta.jpg" alt="Hackfest pasta" /></p>
+
+<p>The next day (Saturday) was a bit more intensive. I started to prototype some ideas I had in mind about the branding for The Document Foundation. Unfortunately, I couldn’t work that much because I was behind with my personal projects too. We had some interesing discussions on future local events and more.</p>
+
+<p><img src="../assets/img/posts/hackfest-working.jpg" alt="Hackfest working" /></p>
+
+<p>This second day we had some delicious pizza 🍕 for dinner.</p>
+
+<p><img src="../assets/img/posts/hackfest-pizza.jpg" alt="Hackfest pizza" /></p>
+
+<p>On Sunday, we made a summary of our contributions and bugfixes/patches/changes during the Hackfest.</p>
+
+<p><img src="../assets/img/posts/hackfest-closing.jpg" alt="Hackfest Last Day" /></p>
+
+<p>After that, it started raining but that didn’t stop up from participating in the awesome Old Town city tour guided by Mike Saunders (Thanks Mike, you rock!).</p>
+
+<p><img src="../assets/img/posts/hackfest-tour.jpg" alt="Hackfest City Tour" /></p>
+
+<p>After the tour, we finished up with some food and beer 🍺.</p>
+
+<p><img src="../assets/img/posts/hackfest-beers.jpg" alt="Hackfest Beers" /></p>
+
+<p>We also discussed about the idea of organizing the next Hackfest in Tirana in the upcoming March of 2019. By having the great support of LibreOffice community members, we can strengthen our skills and give back to the community.</p>
+
+<p>A blogpost from the Document Foundation blog can be found <a href="https://blog.documentfoundation.org/blog/2018/10/31/munich-hackfest-october-2018-roundup-and-photos/">here</a>.</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Thu, 01 Nov 2018 13:00:00 +0100</pubDate><link>https://lushka.al/libreoffice-hackfest-munich/</link><guid isPermaLink="true">https://lushka.al/libreoffice-hackfest-munich/</guid><category>libreoffice</category><category>hackfest</category><category>design</category><category>patch</category><category>foss</category><category>article</category><category>report</category><category>blog</category></item><item><title>Alternatives to YouTube</title><description><h2 id="youtube-subscriptions-without-an-account">YouTube (subscriptions) without an account</h2>
+
+<p><em>First of all: You should not support YouTube</em>. It’s owned by Google and heavily involved in all of their associated activities. But that’s another article entirely! Still, there might be content you’re interested in that’s only available on YouTube.</p>
+
+<p>Petition the creators to use alternative platforms! If they’re non-profit-oriented, it doesn’t matter if the platform is changed once in a while. Almost anything else is preferable. Most likely they won’t because they’re getting very wealthy on YouTube monetisation, which, in turn, <strong>generates enormous income featuring your data</strong>. The following solutions are <strong>fully ad-free</strong>.</p>
+
+<p>To improve privacy for a large number of people, proposed ideas need to be sufficiently <strong>easy and convenient to use</strong>. That’s why we’ll first talk about a very simple change that everyone can implement.</p>
+
+<blockquote>
+  <p>“Invidious” (browser-based, desktop, mobile)</p>
+</blockquote>
+
+<p><strong>Invidious</strong> [1] is an alternative web interface to YouTube. It can be used via the author’s website or self-hosted. It minimizes 3rd party connections, works without JavaScript/Cookies, and also supports subscriptions (only if you create an account on their site). It is a lot faster than YouTube, as well.</p>
+
+<p><img src="../assets/img/posts/invidious.jpg" alt="Invidious website" /></p>
+
+<p>It also supports YouTube videos embedded in other sites [2], and can redirect links [3] to it via userscripts. You will need a userscript manager like the FOSS “Violentmonkey” [4]. (“Grease-“/”Tampermonkey” are not FOSS)</p>
+
+<p>It does <strong>improve privacy to a certain extent</strong> by stripping away many unnecessary requests; your browser will still send a more or less identifiable header to retrieve the videos. If you have to use YouTube in the browser, this is a helpful tool. It does <em>not</em> use the YouTube API.</p>
+
+<p><strong>Possible downsides</strong>: If you use the public site it could track your viewing behavior. If you make use of the subscription feature it has to, of course. It does not allow you to delete your account should you ever desire to do so but at least it doesn’t require your e-mail or any other data. Sometimes you will encounter errors like ‘The media could not be loaded, either because the server or network failed or because the format is not supported’.</p>
+
+<p>It’s best to <strong>avoid relying on redirect scripts</strong> because they may redirect after undesired connections to YouTube have been made already. The same goes for replacing YouTube embeds in websites. A general downside to 3rd-party clients is that you may have to wait out some downtime when YouTube/Google change their systems.</p>
+
+<p>[1] <a href="https://invidio.us/">Invidio</a> | <a href="https://github.com/omarroth/invidious">GitHub repo</a><br />
+[2] <a href="https://greasyfork.org/en/scripts/370442-invidious-embed">Embedded Videos</a><br />
+[3] <a href="https://greasyfork.org/en/scripts/370461-invidious-redirect">Userscript</a><br />
+[4] <a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/">ViolentMonkey Firefox Add-on</a> | <a href="https://github.com/violentmonkey/violentmonkey">GitHub repo</a></p>
+
+<blockquote>
+  <p>“NewPipe” (Android)</p>
+</blockquote>
+
+<p><strong>NewPipe</strong> [1] is a native Android application with many features that make it a solid choice over any proprietary app. Subscriptions, downloads, background playing (for listening to audio) and even creating playlists are all supported. You <strong>do not need any account</strong>.</p>
+
+<p><img src="../assets/img/posts/newpipe.jpg" alt="NewPipe Interface" /></p>
+
+<p>It does <em>not</em> use the YouTube API. This solution <strong>improves user privacy immensely</strong> because, just like Invidious, the amount of requests is reduced to the absolute minimum required. It also registers as a handler in Android so <strong>you can open links directly in NewPipe</strong> - no redirects or anything required.</p>
+
+<p>You can also try <strong>SkyTube</strong> [2], which is based on the NewPipe Extractor, for some extra features like comments and filters.</p>
+
+<p><img src="../assets/img/posts/skytube.jpg" alt="SkyTube Interface" /></p>
+
+<p><strong>Possible downsides</strong>: just potential downtime, like explained before.</p>
+
+<p>[1] <a href="https://newpipe.schabi.org/">NewPipe website</a> / <a href="https://f-droid.org/packages/org.schabi.newpipe/">F-Droid Package</a><br />
+[2] <a href="http://skytube-app.com/">SkyTube website</a> / <a href="https://f-droid.org/repository/browse/?fdid=free.rm.skytube.oss">F-Droid Package</a></p>
+
+<blockquote>
+  <p>“youtube-dl” (any platform with python)</p>
+</blockquote>
+
+<p><strong>youtube-dl</strong> [1] is a command line tool to download YouTube videos. This is by far <strong>the most lightweight solution</strong>. No ads, no unnecessary requests, just a quick way to get videos. No extra requests but lots of extra features: you can clearly see which formats are available [2], download specific audio/video formats [3], download audio without re-encoding [4], download whole channels/playlists, filter by various attributes, get and even embed subtitles, use an external download manager, and more. It also supports an extensive list of other videosharing platforms.</p>
+
+<p>To implement this with maximum effect, you could <strong>use an untainted browser</strong> (cookies/localstorage/everything cleared) <strong>via VPN</strong>, collect your YouTube links, then feed them to youtube-dl all at once. You can also paste them into a text file if you have so many they don’t fit in the console neatly. [5]</p>
+
+<p>Subscriptions can also be simulated with youtube-dl. We share a script to do so here. This will download a single video, whole channel, or a playlist in a folder called videos and organize it by uploader and more. Windows/Linux/Mac are supported. To use it, you only need to have <strong>youtube-dl (via PyPi), ffmpeg, and aria2</strong> (available in virtually every repository) installed. You could skip aria2 and remove the 2 external-downloader lines, but it’s strongly recommended as YouTube is notoriously slow single-threaded. Specifically, it</p>
+
+<ul>
+  <li>downloads the best audio and video up to a maximum height of 720, 480 etc. pixels (adapt this according to your quality preference)</li>
+  <li>downloads subtitles in a language of your choice if available (Get them in the currently best format and convert. That is necessary because the style information from YouTube is often corrupt. This way we get clean subs.)</li>
+  <li>merges everything in a widely supported MKV container</li>
+  <li>keeps track of every video downloaded in a text file</li>
+</ul>
+
+<p>As it only downloads a video once, you can simply watch and delete them afterwards if you like and regularly run the script to fetch new videos. You can automatically do so or just whenever you run out!</p>
+
+<p>Our bash script for Linux/Mac [6] and a Windows batch file [7] are provided.</p>
+
+<p>Installation cannot be covered for every possible system here so if you have questions just ask in our chat. The principle is always as follows:</p>
+
+<ul>
+  <li>download <strong>youtube-dl</strong>, either via PyPi/pip (pip install –upgrade youtube-dl) or homebrew or any other system you might have</li>
+  <li>download <strong>ffmpeg</strong> and <strong>aria2</strong>, usually via your package manager, or on Windows in binary form (.exe) [8]</li>
+  <li>on Linux you are already set, on other platforms like Windows you need to include the folder with ffmpeg.exe/aria2.exe in your PATH variable</li>
+</ul>
+
+<p><strong>Possible downsides</strong>: Only potential downtime like explained before.</p>
+
+<p>[1] <a href="https://rg3.github.io/youtube-dl/">youtube-dl website</a> | <a href="https://github.com/rg3/youtube-dl/">GitHub repo</a><br />
+[2] youtube-dl -F https://www.youtube.com/watch?v=VmEY6T5Wc-Q<br />
+[3] Using the previous commands’ output we picked an audio+video format we’d like to merge: youtube-dl -f “248+251” https://www.youtube.com/watch?v=VmEY6T5Wc-Q<br />
+[4] youtube-dl -f “bestaudio” https://www.youtube.com/watch?v=uFoN_nrBcx4 (Try it! 😁)<br />
+[5] youtube-dl -a yourList.txt (One video/channel/playlist per line)<br />
+[6] get <a href="https://sunbirdgrove.com/~pt/update-yt-subs.html">this</a> and make it executable with chmod +x update-yt-subs.sh, then run with ./update-yt-subs.sh<br />
+[7] get <a href="https://sunbirdgrove.com/~pt/update-yt-subs-batch.html">this</a> and make sure ffmpeg and aria2 are in the PATH variable, then just double click the .bat file<br />
+[8] <a href="https://github.com/aria2/aria2/releases/">aria2</a> <a href="https://ffmpeg.zeranoe.com/builds/">ffmpeg</a> Choose the default win32/64 bit builds</p>
+
+<blockquote>
+  <p>Honorable Mentions</p>
+</blockquote>
+
+<p><strong>YtSubsTracker</strong> [1]: Subscription tracker for Linux built with GTK3. Very new, <em>does not use</em> the YouTube API. Might be worth checking out.</p>
+
+<p><strong>youtube-viewer</strong> [2]: Lightweight Linux desktop application based on GTK2 and perl. No subscription feature but nice for casual browsing. It opens the video in the player of your choice. Keep in mind it <em>does use</em> the YouTube API.</p>
+
+<p><strong>VLC</strong> [3]: VLC is a popular FOSS media player which <strong>supports streaming</strong> YouTube videos. This is a very simple solution without any special features but it works well for occasional use.</p>
+
+<p>Go to Media-Open Network Stream or just paste the link in the main window. Of course, you need enough bandwidth to do so; by default, it will try to stream the best quality it can. Set a lower resolution in Tools-Preferences, click All at the bottom, Input/Codecs, and finally set the Preferred video resolution. It does not allow anything better than 1080p. Keep in mind that this also <em>uses</em> the YouTube API. To make things easier than navigating through menus, you could try a Firefox addon [4] that lets you open YouTube links in VLC. This requires you to install yet another tool, though, so Firefox can communicate with VLC. [5]</p>
+
+<p>[1] <a href="https://gitlab.com/Mis012/YtSubsTracker">GitLab repo</a><br />
+[2] <a href="https://github.com/trizen/youtube-viewer">GitHub repo</a><br />
+[3] <a href="https://www.videolan.org/vlc/">VLC website</a><br />
+[4] <a href="https://addons.mozilla.org/en-US/firefox/addon/open-in-vlc-videolan/">VLC Firefox Add-on</a><br />
+[5] <a href="https://github.com/alexmarcoo/open-in-native-client/releases">Native tool needed</a></p>
+
+<blockquote>
+  <p>YouTube Alternatives</p>
+</blockquote>
+
+<p><strong>PeerTube</strong> [1]: A decentralized P2P alternative to YouTube. <strong>Warning</strong>: Due to its P2P nature everyone in the swarm can see your IP. However, it is not censorable. It’s <strong>closer to the libre philosophy than anything else</strong> as of today.</p>
+
+<p><strong>Vimeo</strong> [2]: This might be the <strong>oldest YouTube alternative</strong>. It doesn’t have ads in the videos, but uploaders have to pay. (The free service is basically a trial no matter what their marketing department says). It also uses Google Ads, so the privacy benefits are very limited.</p>
+
+<p>There are countless YouTube clones but, so far, none have really established themselves as serious and user-respecting alternatives. If you feel adventurous, you can check out the list of sites youtube-dl supports. [3]</p>
+
+<p>[1] <a href="https://github.com/Chocobozzz/PeerTube">GitHub repo</a><br />
+[2] <a href="https://vimeo.com">Vimeo website</a><br />
+[3] <a href="https://github.com/rg3/youtube-dl/tree/master/youtube_dl/extractor">List of supported sites</a></p>
+
+<p>This post is mirrored from <a href="https://t.me/privacytoday">Privacy Today channel</a>. Privacy Today is a group about all things privacy, open source, libre philosophy and more!</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Mon, 15 Oct 2018 14:00:00 +0200</pubDate><link>https://lushka.al/youtube-alternatives/</link><guid isPermaLink="true">https://lushka.al/youtube-alternatives/</guid><category>youtube</category><category>multimedia</category><category>privacy</category><category>tips</category><category>beginner</category><category>apps</category><category>foss</category><category>article</category><category>privacy</category><category>blog</category><category>media</category></item><item><title>The truth about e-mail</title><description><p>Before reading this article, you might want to take a look at the <a href="/threat-modeling">“Threat Modeling” article</a>.</p>
+
+<p>There are many misconceptions about e-Mail, thanks to marketing efforts of companies looking to score a quick buck off the privacy scandals. Such companies include Protonmail, Tutanota et al. This post intends to teach you some basics so you can make an educated decision, unswayed by corporate greed.</p>
+
+<blockquote>
+  <p>E-Mail is <strong>almost</strong> always public. E-Mails are essentially postcards. It can be encrypted in transit [1], but it will always be visible and accessable to the servers involved. There is absolutely no way to avoid this. The e-mail protocol is old and was never designed for privacy.</p>
+</blockquote>
+
+<blockquote>
+  <p>You need to encrypt yourself. The most common way to do so is PGP, which is supported by a wide array of clients [2] and thoroughly tested.</p>
+</blockquote>
+
+<blockquote>
+  <p>Even PGP is not a a perfect solution. Some of the metadata will always be unencrypted. Subject line/sender/recipient/timestamp/etc. can already be used to create detailed profiles of you. There is no way to avoid this. You might want to keep the subject line light.</p>
+</blockquote>
+
+<blockquote>
+  <p>Providers claiming they cannot scan/sell/analyze your data are always a scam. They can, and as stated before: there is no way around it.</p>
+</blockquote>
+
+<blockquote>
+  <p>A way to ensure fully private e-mail communication is to only use a single server that you trust. Internal messages stay on that server/in that network, provided you use TLS/SSL. More on selfhosting at a later point.</p>
+</blockquote>
+
+<blockquote>
+  <p>If you don’t pay, you are most likely the product. Unless your provider of choice is an actual non-profit organisation run by a small community of ordinary people you should stay away from free providers if you possibly can. This is a general rule. There are cheap services that you might be able to afford. While of course not being any more trustable tech-wise, there’s at least a smaller conflict of interest with them.</p>
+</blockquote>
+
+<p>[1] You can check if your message was encrypted in transit with a Thunderbird addon called <a href="https://addons.thunderbird.net/en-US/thunderbird/addon/paranoia">Paranoia</a>. <br />[2] You can use <a href="https://www.enigmail.net/index.php/en/">Enigmail</a> for Thunderbird to easily deploy PGP in daily life without any effort on your end.</p>
+
+<p>This post is mirrored from <a href="https://t.me/privacytoday">Privacy Today channel</a>. Privacy Today is a group about all things privacy, open source, libre philosophy and more!</p>
+
+<p>All content is licensed under CC BY-NC-SA 4.0. (<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Attribution-NonCommercial-ShareAlike 4.0 International</a>).</p>
+</description><pubDate>Wed, 10 Oct 2018 14:00:00 +0200</pubDate><link>https://lushka.al/truth-about-email/</link><guid isPermaLink="true">https://lushka.al/truth-about-email/</guid><category>email</category><category>privacy</category><category>tips</category><category>beginner</category><category>foss</category><category>article</category><category>privacy</category><category>blog</category></item><item><title>LibreOffice Conference 2018 - Tirana</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Wed, 03 Oct 2018 14:00:00 +0200</pubDate><link>https://lushka.al/libocon-2018/</link><guid isPermaLink="true">https://lushka.al/libocon-2018/</guid><category>tirana</category><category>albania</category><category>conference</category><category>libreoffice</category><category>foss</category><category>report</category><category>conference</category><category>report</category><category>blog</category></item><item><title>Ura Work Week - Pristina</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Thu, 23 Aug 2018 14:00:00 +0200</pubDate><link>https://lushka.al/ura-work-week/</link><guid isPermaLink="true">https://lushka.al/ura-work-week/</guid><category>pristina</category><category>kosovo</category><category>work</category><category>week</category><category>foss</category><category>report</category><category>design</category><category>work</category><category>report</category><category>blog</category></item><item><title>Fedora to FLOCK conference - 2018</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Tue, 14 Aug 2018 14:00:00 +0200</pubDate><link>https://lushka.al/flock-2018/</link><guid isPermaLink="true">https://lushka.al/flock-2018/</guid><category>event</category><category>dresden</category><category>germany</category><category>report</category><category>blog</category><category>conference</category><category>flock</category><category>event</category><category>report</category><category>conference</category><category>flock</category></item><item><title>Doku Tech Festival 2018</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Fri, 15 Jun 2018 14:00:00 +0200</pubDate><link>https://lushka.al/doku-tech-2018/</link><guid isPermaLink="true">https://lushka.al/doku-tech-2018/</guid><category>event</category><category>kosovo</category><category>pristina</category><category>report</category><category>blog</category><category>festival</category><category>event</category><category>report</category><category>festival</category><category>dokutech</category></item><item><title>Open Source Conference Albania 2018</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Sun, 20 May 2018 14:00:00 +0200</pubDate><link>https://lushka.al/oscal-2018/</link><guid isPermaLink="true">https://lushka.al/oscal-2018/</guid><category>event</category><category>tirana</category><category>albania</category><category>report</category><category>blog</category><category>conference</category><category>event</category><category>report</category><category>conference</category></item><item><title>CopyFest Durrës - 2018</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Tue, 24 Apr 2018 14:00:00 +0200</pubDate><link>https://lushka.al/copyfest-2018/</link><guid isPermaLink="true">https://lushka.al/copyfest-2018/</guid><category>event</category><category>durres</category><category>albania</category><category>report</category><category>blog</category><category>event</category><category>report</category></item><item><title>FOSDEM 2018</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Fri, 09 Feb 2018 13:00:00 +0100</pubDate><link>https://lushka.al/fosdem-2018/</link><guid isPermaLink="true">https://lushka.al/fosdem-2018/</guid><category>belgium</category><category>conference</category><category>fosdem</category><category>report</category><category>blog</category><category>conference</category><category>report</category></item><item><title>LibreOffice Conference 2017 - Rome</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Wed, 18 Oct 2017 14:00:00 +0200</pubDate><link>https://lushka.al/libocon-2017/</link><guid isPermaLink="true">https://lushka.al/libocon-2017/</guid><category>rome</category><category>conference</category><category>libreoffice</category><category>foss</category><category>report</category><category>conference</category><category>report</category><category>blog</category></item><item><title>FOSSCAMP - Syros 2017</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Sun, 10 Sep 2017 14:00:00 +0200</pubDate><link>https://lushka.al/fosscamp-2017/</link><guid isPermaLink="true">https://lushka.al/fosscamp-2017/</guid><category>greece</category><category>camp</category><category>foss</category><category>hacking</category><category>geeks</category><category>fosscamp</category><category>camp</category><category>report</category></item><item><title>Digital-born Media Carnival 2017 - Kotor, Montenegro</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Thu, 20 Jul 2017 14:00:00 +0200</pubDate><link>https://lushka.al/digital-born-media-carnival-2017/</link><guid isPermaLink="true">https://lushka.al/digital-born-media-carnival-2017/</guid><category>montenegro</category><category>carnival</category><category>media</category><category>digital</category><category>news</category><category>censorship</category><category>report</category><category>carnival</category><category>report</category><category>blog</category></item><item><title>Open Source Conference Albania 2017</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Sat, 20 May 2017 14:00:00 +0200</pubDate><link>https://lushka.al/oscal-2017/</link><guid isPermaLink="true">https://lushka.al/oscal-2017/</guid><category>albania</category><category>conference</category><category>oscal</category><category>report</category><category>foss</category><category>conference</category><category>report</category><category>blog</category><category>oscal</category></item><item><title>Linux Weekend 2017</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Sat, 01 Apr 2017 14:00:00 +0200</pubDate><link>https://lushka.al/linux-weekend-2017/</link><guid isPermaLink="true">https://lushka.al/linux-weekend-2017/</guid><category>albania</category><category>conference</category><category>linux</category><category>foss</category><category>report</category><category>conference</category><category>report</category><category>blog</category></item><item><title>FOSDEM 2017</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Fri, 10 Feb 2017 13:00:00 +0100</pubDate><link>https://lushka.al/fosdem-2017/</link><guid isPermaLink="true">https://lushka.al/fosdem-2017/</guid><category>belgium</category><category>conference</category><category>fosdem</category><category>report</category><category>blog</category><category>conference</category><category>report</category></item><item><title>Wiki Weekend Tirana 2016</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Wed, 14 Dec 2016 13:00:00 +0100</pubDate><link>https://lushka.al/wiki-weekend-2016/</link><guid isPermaLink="true">https://lushka.al/wiki-weekend-2016/</guid><category>albania</category><category>conference</category><category>wikimedia</category><category>knowledge</category><category>report</category><category>conference</category><category>report</category></item><item><title>Software Freedom Kosova 2016</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Wed, 26 Oct 2016 14:00:00 +0200</pubDate><link>https://lushka.al/sfk-16/</link><guid isPermaLink="true">https://lushka.al/sfk-16/</guid><category>kosovo</category><category>conference</category><category>sfk</category><category>conference</category></item><item><title>LibreOffice Conference 2016 - Brno</title><description><p>Konferenca e LibreOffice</p>
+
+<p>Më datat 7-9 Shtator u mbajt konferenca teknologjike e suitës LibreOffice, një paketë programesh me burim të hapur dhe falas të cilat janë një zëvendësim i denjë i paketës Microsoft Office, si për nga siguria dhe për nga karakteristikat që zotëron.</p>
+
+<p>LibreOffice është lançuar fillimisht në vitin 2010, si një projekt i përshtatur nga OpenOffice, i cili fatkeqësisht është mbyllur përfundimisht në muajt e fundit. Ajo varet nga TDF ose The Document Foundation, një fondacion i softuerit të lirë me bazë në Berlin, Gjermani. Kjo paketë përmban programe për përpunimin e tekstit, krijimin dhe përpunimin e tabelave, prezantimeve, diagramave, vizatimeve, krijimin e bazave të të dhënave dhe formulave matematikore. Ajo është e disponueshme në 110 gjuhë të ndryshme. LibreOffice është zhvilluar zyrtarisht për Microsoft Windows (IA-32), Linux (IA-32 dhe x86-64) dhe OS X (IA-32).</p>
+
+<p>Prezent në këtë konferencë isha së bashku me 2 anëtarë të tjerë të komunitetit Open Labs në Shqipëri.
+Konferenca u mbajt në qytetin e Brno, në Republikën Çeke, në Fakultetin e Teknologjisë. Prezent ishin kontribues nga e gjithë bota, shumica nga shtetet si Itali, Gjermani, USA, Tajvan, Japoni etj.
+Secili prej tyre prezantoi rreth një teme të caktuar dhe kishte diskutime të gjata për mënyrat se si mund të përhapet më shumë kjo suitë tek individët e zakonshëm dhe nëpër organizata e administrata qeveritare. Siç duket dhe nga fotot, një pjesë e madhe e të pranishmëve (ku numri total arrinte tek 130), ishin të moshave mbi 30-35 vjeç, gjë që nuk më pëlqeu dhe aq të them të drejtën, prisja që të kishte një mesatare të moshës rreth 25-30, por mesa dukej këta persona e dinin se cfarë ishin duke bërë dhe të sigurt në fjalët që formulonin.</p>
+
+<p>Personalisht, pata një prezantim të dyfishtë së bashku dhe me një mik timin, ku gjatë 30 minutave prezantuam gjendjen e komunitetit të LibreOffice në Shqipëri, që prej fillimit dhe vështirësitë që kemi hasur, e deri në ditët e sotme dhe se cfarë mund të bënim më tepër për të ardhmen, në përpjekje për ta përhapur më tej idelogjinë e softuerit me burim të hapur dhe të lirë për të gjithë.</p>
+
+<p>Pas fundit të cdo dite të konferencës, organizatorët ishin kujdesur që gjithcka të ishte perfekte. Vizituam shumë vende historike në këtë qytet, që nga qendra e tij, muzeu, marketet, e deri tek Shtëpia e Birrës (Çekia është vendi i parë në botë përsa i përket konsumit vjetor të birrës për person). Vizituam zyrat e Red Hat, një kompani shumë e madhe e krijuar rreth vitit 1993, ku diskutuam me të tjerët dhe zhvilluam një hack hour, më pas u zbavitëm duke luajtur bilardo, ping pong etj.</p>
+
+<p>Moti ishte i qëndrueshëm dhe temperaturat ishin ideale, për të na lejuar të qëndronim në shoqërinë e kontribuesve të tjerë. Si përfundim, dua të shtoj se ishte një eksperiencë e paharrueshme dhe shpresoj që të jem prezent vitin e ardhshëm në këtë konferencë e cila do organizohet në Romë.</p>
+
+<p>Fotot janë nën licensën CC-BY-SA 4.0, pronë e Anxhelo Lushka, Italo Vignoli dhe Enio Gemmo.</p>
+</description><pubDate>Sun, 11 Sep 2016 14:00:00 +0200</pubDate><link>https://lushka.al/libocon-2016/</link><guid isPermaLink="true">https://lushka.al/libocon-2016/</guid><category>libreoffice</category><category>conference</category><category>report</category><category>blog</category><category>libreoffice</category><category>conference</category></item><item><title>Open Source Conference Albania 2016</title><description><p>Software Freedom Kosova Conference. One of the biggest of its kind in the Balkans region. The seventh (7th) edition took place this time between 21-23 October, in Pristina, Kosovo. Based on my estimations, it gathered approximately two hundred participants.</p>
+
+<p>I was present at SFK’16 as a maintainer of the LibreOffice infobooth and had a workshop named “LibreOffice Localization Sprint” altogether with Marinela Gogo. Many other Open Labs Hackerspace members were present at the conference.</p>
+
+<p>My workshop was scheduled for Friday. It was an interactive showcase of the Pootle platform used to translate/localize LibreOffice and was attended by around fifteen (20) people. Most of them were students with an ICT background and showed interest. Italo Vignoli was also present at my workshop.</p>
+
+<p>All in all, my presence in SFK’16 was a positive experience, although I was hoping the audience would have been larger and more diverse. Nevertheless, it is good to see the community growing.</p>
+</description><pubDate>Wed, 25 May 2016 14:00:00 +0200</pubDate><link>https://lushka.al/oscal-2016/</link><guid isPermaLink="true">https://lushka.al/oscal-2016/</guid><category>albania</category><category>conference</category><category>oscal</category><category>report</category><category>foss</category><category>conference</category><category>report</category><category>blog</category></item></channel></rss>
