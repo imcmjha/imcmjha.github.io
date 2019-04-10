@@ -3,7 +3,6 @@
     <title>Anxhelo Lushka</title>
     <description>My personal website and blog</description>
     <link>https://lushka.al/</link>
-    <atom:link href="https://lushka.al/feed.xml" rel="self" type="application/rss+xml"/>
     <pubDate>Wed, 20 Mar 2019 23:53:50 +0100</pubDate>
     <item>
       <title>FOSDEM 2020</title>
